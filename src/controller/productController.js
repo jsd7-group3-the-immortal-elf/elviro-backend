@@ -27,7 +27,7 @@ export const getAllProduct = async (_req, res, next) => {
 export const getProductById = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
-		const product = await productModel.findById(String(productId));
+		const product = await productModel.findById(productId);
 
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
@@ -111,11 +111,15 @@ export const updateProduct = async (req, res, next) => {
 		const { productId } = req.params;
 		const { ...editPrduct } = req.body;
 
-		const product = await productModel.findByIdAndUpdate(productId, editPrduct);
+		const product = await productModel.findById(productId);
+		if (!product) {
+			throw new NotFoundError(`Product with id ${productId} is not found`);
+		}
+
+		await productModel.findByIdAndUpdate(productId, editPrduct);
 
 		res.status(200).json({
 			message: `update product with id ${productId} success`,
-			data: product,
 		});
 	} catch (error) {
 		next(error);
@@ -125,7 +129,7 @@ export const updateProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
-		const product = await productModel.findById(String(productId));
+		const product = await productModel.findById(productId);
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
 		}
