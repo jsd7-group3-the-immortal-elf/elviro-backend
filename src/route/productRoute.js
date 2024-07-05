@@ -3,6 +3,7 @@ import express from "express";
 import {
 	getAllProduct,
 	getProductById,
+	deleteProduct,
 } from "../controller/productController.js";
 
 // import adminAuthMiddleware from "../middleware/adminAuthMiddleware";
@@ -19,6 +20,7 @@ router.get("/browse", async (req, res, next) => {});
 
 // router.patch("/:productId", adminAuthMiddleware, async (req, res, next) => {});
 
-// router.delete("/:productId", adminAuthMiddleware, async (req, res, next) => {});
+// adminAuthMiddleware
+router.delete("/:productId", deleteProduct);
 
 export default router;
