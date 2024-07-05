@@ -106,6 +106,22 @@ export const createProduct = async (req, res, next) => {
 	}
 };
 
+export const updateProduct = async (req, res, next) => {
+	try {
+		const { productId } = req.params;
+		const { ...editPrduct } = req.body;
+
+		const product = await productModel.findByIdAndUpdate(productId, editPrduct);
+
+		res.status(200).json({
+			message: `update product with id ${productId} success`,
+			data: product,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const deleteProduct = async (req, res, next) => {
 	try {
 		const { productId } = req.params;

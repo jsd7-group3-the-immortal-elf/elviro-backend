@@ -3,6 +3,7 @@ import {
 	getAllProduct,
 	getProductById,
 	createProduct,
+	updateProduct,
 	deleteProduct,
 } from "../controller/productController.js";
 
@@ -19,7 +20,8 @@ router.get("/browse", async (req, res, next) => {});
 // adminAuthMiddleware
 router.post("/", createProduct);
 
-// router.patch("/:productId", adminAuthMiddleware, async (req, res, next) => {});
+// adminAuthMiddleware
+router.patch("/:productId", updateProduct);
 
 // adminAuthMiddleware
 router.delete("/:productId", deleteProduct);
