@@ -1,6 +1,6 @@
 import productModel from "../model/productModel.js";
 
-export const getAllProduct = async (req, res) => {
+export const getAllProduct = async (_req, res, next) => {
 	try {
 		const allProduct = await productModel.find({ deleteOn: null });
 		res.status(200).json({
@@ -8,40 +8,33 @@ export const getAllProduct = async (req, res) => {
 			data: allProduct,
 		});
 	} catch (error) {
-		res.status(404).json({
-			message: "get all product failed",
-		});
+		next(error);
 	}
 };
 
-export const getProductById = async (req, res) => {
+export const getProductById = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
-		const product = await productModel.findById(productId);
+		const product = await productModel.findById(String(productId));
 		res.status(200).json({
 			message: `get product id ${productId} success`,
 			data: product,
 		});
 	} catch (error) {
-		res.status(404).json({
-			message: `get product failed`,
-		});
+		next(error);
 	}
 };
 
-export const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
-		const product = await productModel.findByIdAndUpdate(productId, {
-			deleteOn: new Date().getTime,
+		await productModel.findByIdAndUpdate(productId, {
+			deleteOn: new Date().getTime(),
 		});
 		res.status(200).json({
 			message: `delete product id ${productId} success`,
-			data: product,
 		});
 	} catch (error) {
-		res.status(404).json({
-			message: `detete product failed`,
-		});
+		next(error);
 	}
 };
