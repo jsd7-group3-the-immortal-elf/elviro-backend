@@ -1,4 +1,10 @@
+import { Error } from "mongoose";
 import productModel from "../model/productModel.js";
+import {
+	BadRequestError,
+	UnAuthorizeError,
+	NotFoundError,
+} from "../utility/error.js";
 
 export const getAllProduct = async (_req, res, next) => {
 	try {
@@ -16,6 +22,11 @@ export const getProductById = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
 		const product = await productModel.findById(String(productId));
+
+		if (!product) {
+			throw new NotFoundError(`Product with id ${productId} is not found`);
+		}
+
 		res.status(200).json({
 			message: `get product id ${productId} success`,
 			data: product,
@@ -28,6 +39,11 @@ export const getProductById = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
+		const product = await productModel.findById(String(productId));
+		if (!product) {
+			throw new NotFoundError(`Product with id ${productId} is not found`);
+		}
+
 		await productModel.findByIdAndUpdate(productId, {
 			deleteOn: new Date().getTime(),
 		});

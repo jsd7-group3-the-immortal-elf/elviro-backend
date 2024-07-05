@@ -12,6 +12,7 @@ import productRoute from "./route/productRoute.js";
 // import userRoute from "./route/userRoute.js";
 
 // import userAuthMiddleware from "./middleware/userAuthMiddleware.js";
+import errorMiddleware from "./middleware/errorMiddleware.js";
 
 mongoose.connect(process.env.DATABASE_URI);
 mongoose.connection.on("connected", () => {
@@ -47,6 +48,8 @@ app.use(express.urlencoded({ extended: true }));
 // app.use("/orders", orderRoute);
 app.use("/products", productRoute);
 // app.use("/users", userRoute);
+
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
