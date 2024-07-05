@@ -1,9 +1,16 @@
+import { v2 as cloudinary } from "cloudinary";
 import productModel from "../model/productModel.js";
 import {
 	BadRequestError,
 	UnAuthorizeError,
 	NotFoundError,
 } from "../utility/error.js";
+
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET,
+});
 
 export const getAllProduct = async (_req, res, next) => {
 	try {
@@ -80,6 +87,13 @@ export const createProduct = async (req, res, next) => {
 			warranty,
 			description,
 		});
+
+		const uploadResult = await cloudinary.uploader.upload(productImage, {
+			public_id: product._id,
+			folder: "Elviro",
+		});
+
+		product.productImage = uploadResult.url;
 
 		await product.save();
 
