@@ -1,4 +1,3 @@
-import { Error } from "mongoose";
 import productModel from "../model/productModel.js";
 import {
 	BadRequestError,
@@ -29,6 +28,63 @@ export const getProductById = async (req, res, next) => {
 
 		res.status(200).json({
 			message: `get product id ${productId} success`,
+			data: product,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const createProduct = async (req, res, next) => {
+	try {
+		const {
+			productName,
+			productImage,
+			rooms,
+			catagory,
+			price,
+			cost,
+			stock,
+			color,
+			dimension,
+			warranty,
+			description,
+		} = req.body;
+
+		if (
+			!productName ||
+			!productImage ||
+			!rooms ||
+			!catagory ||
+			!price ||
+			!cost ||
+			!stock ||
+			!color ||
+			!dimension ||
+			!warranty ||
+			!description
+		) {
+			throw new BadRequestError("All feild is require");
+		}
+
+		const product = new productModel({
+			productName,
+			productImage,
+			rooms,
+			catagory,
+			price,
+			cost,
+			stock,
+			color,
+			dimension,
+			warranty,
+			description,
+		});
+
+		await product.save();
+
+		res.status(201).json({
+			message: `Create product success`,
 			data: product,
 		});
 	} catch (error) {

@@ -2,6 +2,7 @@ import express from "express";
 import {
 	getAllProduct,
 	getProductById,
+	createProduct,
 	deleteProduct,
 } from "../controller/productController.js";
 
@@ -15,7 +16,8 @@ router.get("/:productId", getProductById);
 
 router.get("/browse", async (req, res, next) => {});
 
-// router.post("/", adminAuthMiddleware, async (req, res, next) => {});
+// adminAuthMiddleware
+router.post("/", createProduct);
 
 // router.patch("/:productId", adminAuthMiddleware, async (req, res, next) => {});
 
