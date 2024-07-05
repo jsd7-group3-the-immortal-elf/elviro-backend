@@ -1,6 +1,9 @@
 import express from "express";
 
-import getAllProduct from "../controller/productController.js";
+import {
+	getAllProduct,
+	getProductById,
+} from "../controller/productController.js";
 
 // import adminAuthMiddleware from "../middleware/adminAuthMiddleware";
 
@@ -8,7 +11,7 @@ const router = express.Router();
 
 router.get("/", getAllProduct);
 
-router.get("/:productId", async (req, res, next) => {});
+router.get("/:productId", getProductById);
 
 router.get("/browse", async (req, res, next) => {});
 
