@@ -24,7 +24,7 @@ export const getProductById = async (req, res) => {
 		});
 	} catch (error) {
 		res.status(404).json({
-			message: `get product id ${productId} failed`,
+			message: `get product failed`,
 		});
 	}
 };
@@ -41,7 +41,7 @@ export const deleteProduct = async (req, res) => {
 		});
 	} catch (error) {
 		res.status(404).json({
-			message: `detete product id ${productId} failed`,
+			message: `detete product failed`,
 		});
 	}
 };
