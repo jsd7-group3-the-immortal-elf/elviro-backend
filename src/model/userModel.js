@@ -9,15 +9,17 @@ const userSchema = new mongoose.Schema({
 		phone: { type: String, required: true },
 	},
 	address: [
-		{ firstNameAdr: { type: String, default: firstName } },
-		{ lastNameAdr: { type: String, default: lastName } },
-		{ phoneAdr: { type: String, default: phone } },
-		{ street: { type: String, required: true } },
-		{ province: { type: String, required: true } },
-		{ district: { type: String, required: true } },
-		{ subDistrict: { type: String, required: true } },
-		{ postalCode: { type: String, required: true } },
-		{ default: { type: Boolean, default: true } },
+		{
+			firstNameAdr: { type: String, required: true },
+			lastNameAdr: { type: String, required: true },
+			phoneAdr: { type: String, default: phone },
+			address: { type: String, required: true },
+			province: { type: String, required: true },
+			district: { type: String, required: true },
+			subDistrict: { type: String, required: true },
+			postalCode: { type: String, required: true },
+			default: { type: Boolean, default: false },
+		},
 	],
 	account: {
 		username: { type: String, required: true },
@@ -26,12 +28,12 @@ const userSchema = new mongoose.Schema({
 	cardInfo: {
 		cardNumber: { type: String },
 		cardName: { type: String },
-		expiryDate: { type: Dat, default: new Date().getTime() },
-		cvv: { type: String, min: 0, max: 0, required: true },
+		expiryDate: { type: String, required: true },
+		cvv: { type: String, minLength: 3, maxLength: 3, required: true },
 	},
 	cart: {
 		productId: { type: String, required: true },
-		quantity: { type: Number, required: true },
+		quantity: { type: Number, min: 0, required: true },
 		isChecked: { type: Boolean, default: false },
 	},
 	createOn: {
@@ -45,4 +47,4 @@ const userSchema = new mongoose.Schema({
 	isAdmin: { type: Boolean, default: false },
 });
 
-export default mongoose.model("Product", productSchema);
+export default mongoose.model("User", userSchema);
