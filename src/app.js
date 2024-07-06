@@ -44,7 +44,7 @@ app.use(express.json());
 // URL Encoded Body Parser
 app.use(express.urlencoded({ extended: true }));
 
-// app.use("/users/:userId/cart", userAuthMiddleware, cartRoute);
+app.use("/users/:userId/cart", userAuthMiddleware, cartRoute);
 // app.use("/orders", orderRoute);
 app.use("/products", productRoute);
 // app.use("/users", userRoute);
