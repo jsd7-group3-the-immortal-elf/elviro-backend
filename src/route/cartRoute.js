@@ -2,32 +2,30 @@ import express from "express";
 
 //------import ค่าจาก controller
 import {
-	getProductsByCart,
+	getCartByUser,
 	createCart,
 	updateCart,
 	deleteProductsByCart,
 	deleteOrdered,
 } from "../controller/cartController.js";
 
-//------importตัว authenticate User
-import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
-
 const router = express.Router();
 
 //API - 1 Get each user's cart
-router.get("/:cartId", userAuthMiddleware, getProductsByCart);
+
+router.get("/:userId", getCartByUser);
 
 //API - 2 Create a new cart
-router.post("/", userAuthMiddleware, createCart);
+router.post("/:userId", createCart);
 
 //API - 3 Add new products into a cart
-router.patch("/:cartId", userAuthMiddleware, updateCart);
+router.patch("/:userId/:cartId", updateCart);
 
 //API - 4 Delete products from cart
-router.delete("/:cartId", userAuthMiddleware, deleteProductsByCart);
+router.delete("/:userId/:cartId", deleteProductsByCart);
 
 // รอถามผู้รู้ confirm อีกทีว่าควรแยกไหม ****
 //API - 5 Delete products from cart
-router.delete("/:cartId/order", userAuthMiddleware, deleteOrdered);
+router.delete("/:userId/:cartId/order", deleteOrdered);
 
 export default router;
