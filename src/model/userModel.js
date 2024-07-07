@@ -22,14 +22,14 @@ const userSchema = new mongoose.Schema({
 		},
 	],
 	account: {
-		username: { type: String, required: true },
+		username: { type: String },
 		password: { type: String, required: true },
 	},
 	cardInfo: {
 		cardNumber: { type: String },
 		cardName: { type: String },
-		expiryDate: { type: String, required: true },
-		cvv: { type: String, minLength: 3, maxLength: 3, required: true },
+		expiryDate: { type: String },
+		cvv: { type: String, minLength: 3, maxLength: 3 },
 	},
 	cart: [
 		{
