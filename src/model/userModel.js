@@ -31,11 +31,13 @@ const userSchema = new mongoose.Schema({
 		expiryDate: { type: String, required: true },
 		cvv: { type: String, minLength: 3, maxLength: 3, required: true },
 	},
-	cart: {
-		productId: { type: String, required: true },
-		quantity: { type: Number, min: 0, required: true },
-		isChecked: { type: Boolean, default: false },
-	},
+	cart: [
+		{
+			productId: { type: String, required: true },
+			quantity: { type: Number, min: 0, required: true },
+			isChecked: { type: Boolean, default: false },
+		},
+	],
 	createOn: {
 		type: Date,
 		default: new Date().getTime(),
