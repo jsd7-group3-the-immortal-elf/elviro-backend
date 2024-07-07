@@ -17,6 +17,7 @@ export const getAllProduct = async (_req, res, next) => {
 		const allProduct = await productModel.find({ deleteOn: null });
 		res.status(200).json({
 			message: "get all product success",
+			count: allProduct.length,
 			data: allProduct,
 		});
 	} catch (error) {
@@ -35,6 +36,30 @@ export const getProductById = async (req, res, next) => {
 
 		res.status(200).json({
 			message: `get product id ${productId} success`,
+			data: product,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const browseProduct = async (req, res, next) => {
+	try {
+		const { query } = req;
+		if (!query) {
+			return next();
+		}
+
+		// น่าจะทำเฉพาะอันที่ต้องแก้รูปแบบ
+		if (query.rooms) {
+			const rooms = query.rooms.split("&");
+		}
+
+		const product = await productModel.find(query);
+
+		res.status(200).json({
+			message: "get product success",
+			count: product.length,
 			data: product,
 		});
 	} catch (error) {
