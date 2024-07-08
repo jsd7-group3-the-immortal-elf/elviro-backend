@@ -50,27 +50,11 @@ export const browseProduct = async (req, res, next) => {
 			next();
 		}
 
-		/*
-		search
-		page >> limit, skip
-		rooms arr > $all
-		category
-		price $gte, $lte
-		cost $gte, $lte
-		color
-		width $gte, $lte
-		depth $gte, $lte
-		height $gte, $lte
-		isPublish
-		*/
-
-		// width: {$gte : 100, $lte : 200}
-		// dimension: {
-		// 		width: {$gte : 100, $lte : 200}
-		// }
-
-		console.log(query);
 		// search
+		if (query.search) {
+			query["productName"] = { $regex: new RegExp(query.search, "i") };
+			delete query.search;
+		}
 
 		// filter
 		if (query.rooms) {
