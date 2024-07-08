@@ -113,14 +113,32 @@ export const updateCart = async (req, res, next) => {
 export const deleteProductsByCart = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
-
+		const { productIdArray } = req.body; //ส่ง productId มาเป็น array
+		console.log(productIdArray);
+		//update โดยการลบออกและ save ในตัว
 		const user = await userModel.findById(userId);
-		const product = await user.findById();
-	} catch (error) {}
-};
+		if (!user) {
+			throw new NotFoundError("User not found");
+		}
+		if (!user) {
+			throw new NotFoundError("User not found");
+		}
 
-//API - 5 Delete products from cart
-export const deleteOrdered = async (req, res, next) => {
-	try {
-	} catch (error) {}
+		const updatedUser = await userModel.findByIdAndUpdate(
+			userId,
+			{
+				$pull: {
+					cart: { productId: { $in: productIdArray } },
+				},
+			},
+			{ new: true } // Return the updated document
+		);
+
+		return res.status(200).json({
+			message: "Update Cart Success: an item deleted",
+			data: user.cart,
+		});
+	} catch (error) {
+		next(error);
+	}
 };

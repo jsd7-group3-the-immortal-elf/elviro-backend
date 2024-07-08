@@ -6,7 +6,6 @@ import {
 	createCart,
 	updateCart,
 	deleteProductsByCart,
-	deleteOrdered,
 } from "../controller/cartController.js";
 
 import userModel from "../model/userModel.js";
@@ -30,11 +29,7 @@ router.post("/:userId", createCart, updateCart);
 //API - 3 Add new products into a cart
 router.patch("/:userId", updateCart);
 
-//API - 4 Delete products from cart
-router.delete("/:userId/:cartId", deleteProductsByCart);
-
-// รอถามผู้รู้ confirm อีกทีว่าควรแยกไหม ****
-//API - 5 Delete products from cart
-router.delete("/:userId/:cartId/order", deleteOrdered);
+//API - 4 Delete one product from cart
+router.delete("/:userId", deleteProductsByCart);
 
 export default router;
