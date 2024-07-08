@@ -9,7 +9,7 @@ import helmet from "helmet";
 // import cartRoute from "./route/cartRoute.js";
 // import orderRoute from "./route/orderRoute.js";
 import productRoute from "./route/productRoute.js";
-// import userRoute from "./route/userRoute.js";
+import userRoute from "./route/userRoute.js";
 
 // import userAuthMiddleware from "./middleware/userAuthMiddleware.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
@@ -44,10 +44,10 @@ app.use(express.json());
 // URL Encoded Body Parser
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/users/:userId/cart", userAuthMiddleware, cartRoute);
+//app.use("/users/:userId/cart", userAuthMiddleware, cartRoute);
 // app.use("/orders", orderRoute);
 app.use("/products", productRoute);
-// app.use("/users", userRoute);
+app.use("/users", userRoute);
 
 app.use(errorMiddleware);
 

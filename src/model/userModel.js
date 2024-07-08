@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
 		{
 			firstNameAdr: { type: String, required: true },
 			lastNameAdr: { type: String, required: true },
-			phoneAdr: { type: String, default: phone },
+			phoneAdr: { type: String, default: true },
 			address: { type: String, required: true },
 			province: { type: String, required: true },
 			district: { type: String, required: true },
