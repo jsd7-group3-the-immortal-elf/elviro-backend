@@ -46,22 +46,90 @@ export const getProductById = async (req, res, next) => {
 export const browseProduct = async (req, res, next) => {
 	try {
 		const { query } = req;
-		if (!query) {
-			return next();
+		if (Object.keys(query).length === 0) {
+			next();
 		}
 
-		// น่าจะทำเฉพาะอันที่ต้องแก้รูปแบบ
+		/*
+		search
+		page >> limit, skip
+		rooms arr > $all
+		category
+		price $gte, $lte
+		cost $gte, $lte
+		color
+		width $gte, $lte
+		depth $gte, $lte
+		height $gte, $lte
+		isPublish
+		*/
+
+		// width: {$gte : 100, $lte : 200}
+		// dimension: {
+		// 		width: {$gte : 100, $lte : 200}
+		// }
+
+		console.log(query);
+		// search
+
+		// filter
 		if (query.rooms) {
-			const rooms = query.rooms.split("&");
+			query.rooms = { $all: query.rooms.split("&") };
 		}
 
-		const product = await productModel.find(query);
+		if (query.price) {
+			const price = query.price.split(" ");
+			query.price = { $gte: price[0], $lte: price[1] };
+		}
+		if (query.cost) {
+			const cost = query.cost.split(" ");
+			query.cost = { $gte: cost[0], $lte: cost[1] };
+		}
 
-		res.status(200).json({
-			message: "get product success",
-			count: product.length,
-			data: product,
-		});
+		if (query.width) {
+			const width = query.width.split(" ");
+			query["dimension.width"] = { $gte: width[0], $lte: width[1] };
+			delete query.width;
+		}
+		if (query.depth) {
+			const depth = query.depth.split(" ");
+			query["dimension.depth"] = { $gte: depth[0], $lte: depth[1] };
+			delete query.depth;
+		}
+		if (query.height) {
+			const height = query.height.split(" ");
+			query["dimension.height"] = { $gte: height[0], $lte: height[1] };
+			delete query.height;
+		}
+		console.log(query);
+
+		// pagination
+		if (query.page && query.limit) {
+			const limit = query.limit;
+			const offset = (query.page - 1) * limit;
+
+			delete query.limit;
+			delete query.page;
+
+			const queryProduct = await productModel
+				.find(query)
+				.skip(offset)
+				.limit(limit);
+
+			res.status(200).json({
+				message: "get product success",
+				count: queryProduct.length,
+				data: queryProduct,
+			});
+		} else {
+			const queryProduct = await productModel.find(query);
+
+			res.status(200).json({
+				message: "get product success",
+				count: queryProduct.length,
+				data: queryProduct,
+			});
+		}
 	} catch (error) {
 		next(error);
 	}
@@ -73,7 +141,7 @@ export const createProduct = async (req, res, next) => {
 			productName,
 			productImage,
 			rooms,
-			catagory,
+			category,
 			price,
 			cost,
 			stock,
@@ -87,7 +155,7 @@ export const createProduct = async (req, res, next) => {
 			!productName ||
 			!productImage ||
 			!rooms ||
-			!catagory ||
+			!category ||
 			!price ||
 			!cost ||
 			!stock ||
@@ -96,14 +164,14 @@ export const createProduct = async (req, res, next) => {
 			!warranty ||
 			!description
 		) {
-			throw new BadRequestError("All feild is require");
+			throw new BadRequestError("All field is require");
 		}
 
 		const product = new productModel({
 			productName,
 			productImage,
 			rooms,
-			catagory,
+			category,
 			price,
 			cost,
 			stock,
@@ -134,14 +202,14 @@ export const createProduct = async (req, res, next) => {
 export const updateProduct = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
-		const { ...editPrduct } = req.body;
+		const { ...editProduct } = req.body;
 
 		const product = await productModel.findById(productId);
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
 		}
 
-		await productModel.findByIdAndUpdate(productId, editPrduct);
+		await productModel.findByIdAndUpdate(productId, editProduct);
 
 		res.status(200).json({
 			message: `update product with id ${productId} success`,
