@@ -2,6 +2,7 @@ import express from "express";
 import {
 	getAllProduct,
 	getProductById,
+	browseProduct,
 	createProduct,
 	updateProduct,
 	deleteProduct,
@@ -11,11 +12,11 @@ import {
 
 const router = express.Router();
 
-router.get("/", getAllProduct);
+router.get("/", browseProduct, getAllProduct);
 
 router.get("/:productId", getProductById);
 
-router.get("/browse", async (req, res, next) => {});
+// router.get("/:id/browse", browseProduct);
 
 // adminAuthMiddleware
 router.post("/", createProduct);
