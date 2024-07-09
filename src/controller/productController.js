@@ -14,11 +14,17 @@ import {
 
 export const getAllProduct = async (_req, res, next) => {
 	try {
-		const allProduct = await getAllProduct();
+		const limit = 24;
+		const page = 1;
+		const skip = (page - 1) * limit;
+		const totalPage = Math.ceil(queryProduct.length / limit);
+
+		const allProduct = await getAllProduct(skip, limit);
 
 		res.status(200).json({
 			message: "get all product success",
 			count: allProduct.length,
+			totalPage: totalPage,
 			data: allProduct,
 		});
 	} catch (error) {

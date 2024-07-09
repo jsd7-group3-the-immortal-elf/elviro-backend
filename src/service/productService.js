@@ -1,7 +1,7 @@
 import productModel from "../model/productModel.js";
 
-export async function getAllProduct() {
-	return productModel.find({ deleteOn: null });
+export async function getAllProduct(skip, limit) {
+	return productModel.find({ deleteOn: null }).skip(skip).limit(limit);
 }
 
 export async function getProductById(productId) {
