@@ -2,6 +2,8 @@ import express from "express";
 import {
 	getAllUsers,
 	getUserById,
+	deleteUser,
+	createUser,
 } from "../controller/userController.js";
 
 // import {
@@ -23,12 +25,12 @@ router.get("/:userId", getUserById);
 // router.get("/browse", async (req, res, next) => {});
 
 // // adminAuthMiddleware
-// router.post("/", createUser);
+router.post("/", createUser);
 
 // // adminAuthMiddleware
 // router.patch("/:userId", updateUser);
 
 // // adminAuthMiddleware
-// router.delete("/:UserId", deleteUser);
+router.patch("/:userId", deleteUser);
 
 export default router;
