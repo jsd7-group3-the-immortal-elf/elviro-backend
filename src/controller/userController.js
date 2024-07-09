@@ -17,19 +17,21 @@ export const getAllUsers = async (req, res, next) => {
 	}
 };
 
-export const getUserById = async (req, res) => {
+export const getUserById = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
 		const user = await userModel.findById(userId);
+
+		if (!user) {
+			throw new NotFoundError(`User with id ${userId} is not found`);
+		}
 
 		res.status(200).json({
 			message: `get user id ${userId} success`,
 			data: user,
 		});
 	} catch (error) {
-		res.status(404).json({
-			message: "get user failed",
-		});
+		next(error);
 	}
 };
 
