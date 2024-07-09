@@ -65,57 +65,6 @@ export const createUser = async (req, res, next) => {
 	}
 };
 
-
-
-// export const createUser = async (req, res, next) => {
-// 	try {
-// 		const {
-// 			firstName,
-// 			lastName,
-// 			email,
-// 			phone,
-// 			username,
-// 			password
-// 		} = req.body;
-
-// 		if (
-// 			!firstName ||
-// 			!lastName ||
-// 			!email ||
-// 			!phone ||
-// 			!username ||
-// 			!password
-// 		) {
-// 			throw new BadRequestError("All field is require");
-// 		}
-
-// 		const user = new userModel({
-// 			firstName,
-// 			lastName,
-// 			email,
-// 			phone,
-// 			username,
-// 			password,
-// 		});
-
-// 		// const uploadResult = await cloudinary.uploader.upload(userImage, {
-// 		// 	public_id: product._id,
-// 		// 	folder: "Elviro",
-// 		// });
-
-// 		// product.productImage = uploadResult.url;
-
-// 		await user.save();
-
-// 		res.status(201).json({
-// 			message: `Create user success`,
-// 			data: user,
-// 		});
-// 	} catch (error) {
-// 		next(error);
-// 	}
-// };
-
 export const deleteUser = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
