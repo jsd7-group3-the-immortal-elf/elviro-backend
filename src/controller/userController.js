@@ -5,7 +5,7 @@ import {
 	NotFoundError,
 } from "../utility/error.js";
 
-export const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res, next) => {
 	try {
 		const allUsers = await userModel.find();
 		res.status(200).json({
@@ -13,9 +13,7 @@ export const getAllUsers = async (req, res) => {
 			data: allUsers,
 		});
 	} catch (error) {
-		res.status(404).json({
-			message: "get all user failed",
-		});
+		next(error);
 	}
 };
 
