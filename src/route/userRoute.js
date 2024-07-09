@@ -2,6 +2,7 @@ import express from "express";
 import {
 	getAllUsers,
 	getUserById,
+	deleteUser,
 } from "../controller/userController.js";
 
 // import {
@@ -29,6 +30,6 @@ router.get("/:userId", getUserById);
 // router.patch("/:userId", updateUser);
 
 // // adminAuthMiddleware
-// router.delete("/:UserId", deleteUser);
+router.patch("/:userId", deleteUser);
 
 export default router;
