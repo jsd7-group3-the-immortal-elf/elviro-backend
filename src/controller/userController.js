@@ -41,7 +41,7 @@ export const deleteUser = async (req, res, next) => {
 		const user = await userModel.findById(userId);
 
 		if (!user) {
-			throw new NotFoundError(`User with id ${productId} is not found`);
+			throw new NotFoundError(`User with id ${userId} is not found`);
 		}
 		await userModel.findByIdAndUpdate(userId, {
 			deleteOn: new Date().getTime(),
