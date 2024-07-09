@@ -1,4 +1,9 @@
 import userModel from "../model/userModel.js";
+import {
+	BadRequestError,
+	UnAuthorizeError,
+	NotFoundError,
+} from "../utility/error.js";
 
 export const getAllUsers = async (req, res) => {
 	try {
