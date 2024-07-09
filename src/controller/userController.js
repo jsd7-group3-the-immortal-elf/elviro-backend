@@ -30,13 +30,13 @@ export const getUserById = async (req, res) => {
 	}
 };
 
-export const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
 		const user = await userModel.findById(userId);
 
 		if (!user) {
-			res.status(404).json({ message: `User {$userId} not found!` });
+			throw new NotFoundError(`Product with id ${productId} is not found`);
 		}
 		await userModel.findByIdAndUpdate(userId, {
 			deleteOn: new Date().getTime(),
@@ -47,9 +47,6 @@ export const deleteUser = async (req, res) => {
 			data: user,
 		});
 	} catch (error) {
-		res.status(404).json({
-			message: "delete user failed",
-			error: error.message,
-		});
+		next(error);
 	}
 };
