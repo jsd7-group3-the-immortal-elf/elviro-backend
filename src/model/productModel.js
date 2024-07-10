@@ -14,7 +14,7 @@ const productSchema = new mongoose.Schema({
 		enum: ["Bedroom", "Living Room", "Kitchen"],
 		require: true,
 	},
-	catagory: {
+	category: {
 		type: String,
 		enum: ["Bed", "Storage", "Table", "Seat"],
 		required: true,

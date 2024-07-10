@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
 		{
 			firstNameAdr: { type: String, required: true },
 			lastNameAdr: { type: String, required: true },
-			phoneAdr: { type: String, default: phone },
+			phoneAdr: { type: String, required: true },
 			address: { type: String, required: true },
 			province: { type: String, required: true },
 			district: { type: String, required: true },
@@ -22,20 +22,22 @@ const userSchema = new mongoose.Schema({
 		},
 	],
 	account: {
-		username: { type: String, required: true },
+		username: { type: String },
 		password: { type: String, required: true },
 	},
 	cardInfo: {
 		cardNumber: { type: String },
 		cardName: { type: String },
-		expiryDate: { type: String, required: true },
-		cvv: { type: String, minLength: 3, maxLength: 3, required: true },
+		expiryDate: { type: String },
+		cvv: { type: String, minLength: 3, maxLength: 3 },
 	},
-	cart: {
-		productId: { type: String, required: true },
-		quantity: { type: Number, min: 0, required: true },
-		isChecked: { type: Boolean, default: false },
-	},
+	cart: [
+		{
+			productId: { type: String, required: true },
+			quantity: { type: Number, min: 0, required: true },
+			isChecked: { type: Boolean, default: false },
+		},
+	],
 	createOn: {
 		type: Date,
 		default: new Date().getTime(),

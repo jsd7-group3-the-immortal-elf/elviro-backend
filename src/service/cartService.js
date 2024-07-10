@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { getProductsByCart } from "../controller/cartController";
 
-dotenv.congig();
+dotenv.config();
 
 //File คำสั่งของ cart
 const cartService = {
