@@ -6,10 +6,10 @@ import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
 
-// import cartRoute from "./route/cartRoute.js";
-import orderRoute from "./route/orderRoute.js";
+import cartRoute from "./route/cartRoute.js";
+// import orderRoute from "./route/orderRoute.js";
 import productRoute from "./route/productRoute.js";
-// import userRoute from "./route/userRoute.js";
+import userRoute from "./route/userRoute.js";
 
 // import userAuthMiddleware from "./middleware/userAuthMiddleware.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
@@ -33,7 +33,7 @@ const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
 	max: 100, // limit each IP to 100 requests per windowMs
 });
-app.use(limiter);
+// app.use(limiter);
 
 // Logger
 app.use(morgan("dev"));
@@ -44,10 +44,11 @@ app.use(express.json());
 // URL Encoded Body Parser
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/users/:userId/cart", userAuthMiddleware, cartRoute);
-app.use("/orders", orderRoute);
+//ใส่ userAuthMiddleWare ไปด้วย ใส่แค่ตรงนี้ก็
+app.use("/cart", cartRoute);
+// app.use("/orders", orderRoute);
 app.use("/products", productRoute);
-// app.use("/users", userRoute);
+app.use("/users", userRoute);
 
 app.use(errorMiddleware);
 
