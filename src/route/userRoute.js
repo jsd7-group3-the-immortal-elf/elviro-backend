@@ -2,17 +2,12 @@ import express from "express";
 import {
 	getAllUsers,
 	getUserById,
-	deleteUser,
 	createUser,
+	updateUser,
+	deleteUser,
+	
 } from "../controller/userController.js";
 
-// import {
-// 	getAllUsers,
-// 	getUserById,
-// 	createUser,
-// 	updateUser,
-// 	deleteUser,
-// } from "../controller/userController.js";
 
 // import adminAuthMiddleware from "../middleware/adminAuthMiddleware";
 
@@ -28,7 +23,7 @@ router.get("/:userId", getUserById);
 router.post("/", createUser);
 
 // // adminAuthMiddleware
-// router.patch("/:userId", updateUser);
+router.patch("/:userId", updateUser);
 
 // // adminAuthMiddleware
 router.patch("/:userId", deleteUser);
