@@ -63,19 +63,23 @@ export const createUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
-		const {password,...editUser } = req.body;
+		const {account = {},...editUser } = req.body;
+		const {password, ...accountFileds} = account
 		console.log(req.body)
+		
 		const user = await userModel.findById(userId);
+		console.log(userId)
+
 		if (!user) {
 			throw new NotFoundError(`User with id ${userId} is not found`);
 		}
 
 		const updateData = {};
-
+		
 		if (password) {
 			const salt = await bcrypt.genSalt(10);
-			const hashPassword = await bcrypt.hash(password, salt);
-			updateData['account.password'] = hashPassword; 
+			const hashedPassword = await bcrypt.hash(password, salt);
+			updateData['account.password'] = hashedPassword;
 		}
 
 		const buildUpdateData = (data, prefix = '') => {
@@ -87,8 +91,10 @@ export const updateUser = async (req, res, next) => {
 				}
 			}
 		};
+		buildUpdateData(accountFileds, 'account.');
 
 		buildUpdateData(editUser);
+		console.log('Update Data:', updateData);
 		
 		const updatedUser = await userModel.findByIdAndUpdate(
 			userId,
