@@ -4,7 +4,6 @@ import {
 	UnAuthorizeError,
 	NotFoundError,
 } from "../utility/error.js";
-import productModel from "../model/productModel.js";
 
 export const getAllProduct = async (_req, res, next) => {
 	try {
@@ -12,11 +11,7 @@ export const getAllProduct = async (_req, res, next) => {
 		const page = 1;
 		const skip = (page - 1) * limit;
 
-		// const allProduct = await productService.getAllProduct(skip, limit);
-		const allProduct = await productModel
-			.find({ deleteOn: null })
-			.skip(skip)
-			.limit(limit);
+		const allProduct = await productService.getAllProduct(skip, limit);
 
 		const count = allProduct.length;
 		const totalPage = Math.ceil(count / limit);
@@ -35,8 +30,7 @@ export const getAllProduct = async (_req, res, next) => {
 export const getProductById = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
-		// const product = await productService.getProductById(productId);
-		const product = await productModel.findById(productId);
+		const product = await productService.getProductById(productId);
 
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
@@ -55,7 +49,7 @@ export const browseProduct = async (req, res, next) => {
 	try {
 		const { query } = req;
 		if (Object.keys(query).length === 0) {
-			next();
+			return next();
 		}
 
 		// search
@@ -104,8 +98,7 @@ export const browseProduct = async (req, res, next) => {
 			delete query.page;
 		}
 
-		// const queryProduct = await productService.browseProduct(query, skip, limit);
-		const queryProduct = await productModel.find(query).skip(skip).limit(limit);
+		const queryProduct = await productService.browseProduct(query, skip, limit);
 
 		const count = queryProduct.length;
 		const totalPage = Math.ceil(count / limit);
@@ -167,9 +160,7 @@ export const createProduct = async (req, res, next) => {
 			description,
 		};
 
-		// const product = await productService.createProduct(data);
-		const product = new productModel(data);
-		await product.save();
+		const product = await productService.createProduct(data);
 
 		res.status(201).json({
 			message: `Create product success`,
@@ -184,13 +175,12 @@ export const updateProduct = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
 		const { ...editProduct } = req.body;
-		const product = await productModel.findById(productId);
+		const product = await productService.getProductById(productId);
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
 		}
 
-		// await productService.updateProduct(productId, editProduct);
-		await productModel.findByIdAndUpdate(productId, editProduct);
+		await productService.updateProduct(productId, editProduct);
 
 		res.status(200).json({
 			message: `update product with id ${productId} success`,
@@ -203,15 +193,12 @@ export const updateProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
-		const product = await productModel.findById(productId);
+		const product = await productService.getProductById(productId);
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
 		}
 
-		// await productService.deleteProduct(productId);
-		await productModel.findByIdAndUpdate(productId, {
-			deleteOn: new Date().getTime(),
-		});
+		await productService.deleteProduct(productId);
 
 		res.status(200).json({
 			message: `delete product id ${productId} success`,
