@@ -1,4 +1,5 @@
 import userModel from "../model/userModel.js";
+import bcrypt from 'bcryptjs'; 
 import {
 	BadRequestError,
 	UnAuthorizeError,
@@ -59,6 +60,45 @@ export const createUser = async (req, res, next) => {
 		res.status(201).json({
 			message: `Create user success`,
 			data: user,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const updateUser = async (req, res, next) => {
+	try {
+		const { userId } = req.params;
+		const {...editUser } = req.body;
+		//console.log(req.body)
+		const user = await userModel.findById(userId);
+		if (!user) {
+			throw new NotFoundError(`User with id ${userId} is not found`);
+		}
+
+		const updateData = {};
+
+		const buildUpdateData = (data, prefix = '') => {
+			for (const key in data) {
+				if (typeof data[key] === 'object' && data[key] !== null && !Array.isArray(data[key])) {
+					buildUpdateData(data[key], `${prefix}${key}.`);
+				} else {
+					updateData[`${prefix}${key}`] = data[key];
+				}
+			}
+		};
+
+		buildUpdateData(editUser);
+		
+		const updatedUser = await userModel.findByIdAndUpdate(
+			userId,
+			{ $set: updateData },
+			{ new: true, runValidators: true }
+		);
+
+		res.status(200).json({
+			message: `update user with id ${userId} success`,
+			user: updatedUser,
 		});
 	} catch (error) {
 		next(error);
