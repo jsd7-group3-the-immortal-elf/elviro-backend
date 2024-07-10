@@ -44,9 +44,12 @@ export const createUser = async (req, res, next) => {
 		if (!profile || !account)
 			{ throw new BadRequestError("All field is require");}
 
+		const salt = await bcrypt.genSalt(10);
+		const hashedPassword = await bcrypt.hash(account.password, salt);
+
 		const user = new userModel({
 			profile,
-			account,
+			account: {...account, password: hashedPassword},
 		});
 
 		await user.save();
