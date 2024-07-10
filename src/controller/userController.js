@@ -1,6 +1,6 @@
 import userModel from "../model/userModel.js";
 import bcrypt from 'bcryptjs';
-// import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import {
 	BadRequestError,
 	UnAuthorizeError,
@@ -63,14 +63,20 @@ export const createUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
-		const {...editUser } = req.body;
-		//console.log(req.body)
+		const {password,...editUser } = req.body;
+		console.log(req.body)
 		const user = await userModel.findById(userId);
 		if (!user) {
 			throw new NotFoundError(`User with id ${userId} is not found`);
 		}
 
 		const updateData = {};
+
+		if (password) {
+			const salt = await bcrypt.genSalt(10);
+			const hashPassword = await bcrypt.hash(password, salt);
+			updateData['account.password'] = hashPassword; 
+		}
 
 		const buildUpdateData = (data, prefix = '') => {
 			for (const key in data) {
@@ -128,16 +134,18 @@ export const userLogin = async (req, res, next) => {
 		const user = await userModel.findOne({ 'account.username': username });
 		// console.log('password', user.account.password)
 		if (!user) {
-			throw new UnAuthorizeError(`User ${username} is not found`);
+			throw new UnAuthorizeError(`Ueser ${username} is not found`);
 		}
-		const isPasswordValid = (password == user.account.password);
+		const isPasswordValid = await bcrypt.compare(password, user.account.password);
 		if (!isPasswordValid) {
-			throw new UnAuthorizeError(`User password ${username} is not match`);
+			throw new UnAuthorizeError(`Password for user ${username} dose not match`);
 		}
-		
+		const payload = { id: user._id, username: user.account.username,};
+
+		const accessToken  = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '36000m'})
 		res.status(200).json({
 			message: `login user ${user.account.username} success`,
-			data: user.account,
+			data: user.account,accessToken,
 		});
 	} catch (error) {
 		next(error);
