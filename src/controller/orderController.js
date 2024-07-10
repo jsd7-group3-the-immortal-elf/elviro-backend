@@ -8,7 +8,22 @@ import {
 export const getAllOrder = async (req, res, next) => {
 	try {
 		const listOrder = await orderService.getAllOrder();
-		res.status(200).json({ message: "Get All Order", data: listOrder });
+		return res.status(200).json({ message: "Get All Order", data: listOrder });
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getUserId = async (req, res, next) => {
+	try {
+		const { userId } = req.params;
+		// const objectId = await objectId(userId);
+		// console.log("objectId is :  " + objectId);
+		const inputObjectId = `ObjectId('${userId}')`;
+		// console.log("Object : " + inputObjectId);
+		const user = await orderService.getUserId(inputObjectId);
+		// console.log("ID User : ", user);
+		return res.status(200).json({ message: "Get User Order Test", data: user });
 	} catch (error) {
 		next(error);
 	}

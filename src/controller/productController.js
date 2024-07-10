@@ -1,11 +1,11 @@
-import {
-	getAllProduct,
-	getProductById,
-	browseProduct,
-	createProduct,
-	updateProduct,
-	deleteProduct,
-} from "../service/productService.js";
+// import {
+// 	getAllProduct,
+// 	getProductById,
+// 	browseProduct,
+// 	createProduct,
+// 	updateProduct,
+// 	deleteProduct,
+// } from "../service/productService.js";
 import {
 	BadRequestError,
 	UnAuthorizeError,
