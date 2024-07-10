@@ -1,5 +1,6 @@
 import userModel from "../model/userModel.js";
-import bcrypt from 'bcryptjs'; 
+import bcrypt from 'bcryptjs';
+// import jwt from 'jsonwebtoken';
 import {
 	BadRequestError,
 	UnAuthorizeError,
@@ -38,17 +39,10 @@ export const getUserById = async (req, res, next) => {
 
 export const createUser = async (req, res, next) => {
 	try {
-		const {
-			profile,
-			account,
-		} = req.body;
+		const { profile, account, } = req.body;
 
-		if (
-			!profile ||
-			!account
-		) {
-			throw new BadRequestError("All field is require");
-		}
+		if (!profile || !account)
+			{ throw new BadRequestError("All field is require");}
 
 		const user = new userModel({
 			profile,
@@ -120,6 +114,30 @@ export const deleteUser = async (req, res, next) => {
 		res.status(200).json({
 			message: `delete id ${userId} success`,
 			data: user,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const userLogin = async (req, res, next) => {
+	try {
+		const { username, password } = req.body.account;
+		// console.log('boyd',req.body);
+		// console.log("send", username, password);
+		const user = await userModel.findOne({ 'account.username': username });
+		// console.log('password', user.account.password)
+		if (!user) {
+			throw new UnAuthorizeError(`User ${username} is not found`);
+		}
+		const isPasswordValid = (password == user.account.password);
+		if (!isPasswordValid) {
+			throw new UnAuthorizeError(`User password ${username} is not match`);
+		}
+		
+		res.status(200).json({
+			message: `login user ${user.account.username} success`,
+			data: user.account,
 		});
 	} catch (error) {
 		next(error);
