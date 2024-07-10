@@ -6,4 +6,6 @@ const router = express.Router();
 
 // get All Order All user
 router.get("/", orderController.getAllOder);
+// post create order
+router.psdt("/", orderController.getAllOder);
 export default router;

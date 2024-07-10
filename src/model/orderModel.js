@@ -14,12 +14,12 @@ const orderSchema = new mongoose.Schema({
 	status: {
 		type: String,
 		enum: [
-			"Pending",
-			"Cancelled",
-			"Processing",
-			"picked",
-			"Shipped",
-			"ComPlete",
+			"Pending", // สั่งorderแล้ว
+			"Cancelled", //กดยกเลิก
+			"Processing", //adminกำลังเตรียมของ
+			"picked", //admin picked
+			"Shipped", //admin จัดสังแล้ว
+			"Complete", //สำเร็จ
 		],
 		default: "Pending",
 	},
