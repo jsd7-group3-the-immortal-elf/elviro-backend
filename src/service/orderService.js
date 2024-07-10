@@ -1,13 +1,15 @@
-import order from "../model/orderModel.js";
+import orderModel from "../model/orderModel.js";
 
 const orderService = {
-	async getAllOder() {
-		return order.find();
+	async getAllOrder() {
+		return orderModel.find();
 	},
 
 	async createOrderData(data) {
-		return order.insertOne(data);
+		// const order = new orderModel(data);
+		// await order.save();
+		// return order;
+		return orderModel.insertMany(data);
 	},
 };
-
 export default orderService;

@@ -1,11 +1,11 @@
 import express from "express";
-import * as orderController from "../controller/orderController.js";
+import { getAllOrder, createOrder } from "../controller/orderController.js";
 import orderService from "../service/orderService.js";
 
 const router = express.Router();
 
 // get All Order All user
-router.get("/", orderController.getAllOder);
+router.get("/", getAllOrder);
 // post create order
-router.psdt("/", orderController.getAllOder);
+router.post("/", createOrder);
 export default router;
