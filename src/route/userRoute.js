@@ -2,17 +2,13 @@ import express from "express";
 import {
 	getAllUsers,
 	getUserById,
-	deleteUser,
 	createUser,
+	updateUser,
+	deleteUser,
+	userLogin,
+	
 } from "../controller/userController.js";
 
-// import {
-// 	getAllUsers,
-// 	getUserById,
-// 	createUser,
-// 	updateUser,
-// 	deleteUser,
-// } from "../controller/userController.js";
 
 // import adminAuthMiddleware from "../middleware/adminAuthMiddleware";
 
@@ -24,11 +20,13 @@ router.get("/:userId", getUserById);
 
 // router.get("/browse", async (req, res, next) => {});
 
-// // adminAuthMiddleware
-router.post("/", createUser);
+router.post("/login", userLogin);
 
 // // adminAuthMiddleware
-// router.patch("/:userId", updateUser);
+router.post("/register", createUser);
+
+// // adminAuthMiddleware
+router.patch("/:userId", updateUser);
 
 // // adminAuthMiddleware
 router.patch("/:userId", deleteUser);

@@ -1,11 +1,4 @@
-// import {
-// 	getAllProduct,
-// 	getProductById,
-// 	browseProduct,
-// 	createProduct,
-// 	updateProduct,
-// 	deleteProduct,
-// } from "../service/productService.js";
+import productService from "../service/productService.js";
 import {
 	BadRequestError,
 	UnAuthorizeError,
@@ -17,13 +10,15 @@ export const getAllProduct = async (_req, res, next) => {
 		const limit = 24;
 		const page = 1;
 		const skip = (page - 1) * limit;
-		const totalPage = Math.ceil(queryProduct.length / limit);
 
-		const allProduct = await getAllProduct(skip, limit);
+		const allProduct = await productService.getAllProduct(skip, limit);
+
+		const count = allProduct.length;
+		const totalPage = Math.ceil(count / limit);
 
 		res.status(200).json({
 			message: "get all product success",
-			count: allProduct.length,
+			count: count,
 			totalPage: totalPage,
 			data: allProduct,
 		});
@@ -35,7 +30,7 @@ export const getAllProduct = async (_req, res, next) => {
 export const getProductById = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
-		const product = await getProductById(productId);
+		const product = await productService.getProductById(productId);
 
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
@@ -54,7 +49,7 @@ export const browseProduct = async (req, res, next) => {
 	try {
 		const { query } = req;
 		if (Object.keys(query).length === 0) {
-			next();
+			return next();
 		}
 
 		// search
@@ -94,37 +89,26 @@ export const browseProduct = async (req, res, next) => {
 		query.deleteOn = null;
 
 		// pagination
-		if (query.page && query.limit) {
-			const limit = query.limit;
-			const skip = (query.page - 1) * limit;
-			const totalPage = Math.ceil(queryProduct.length / limit);
+		const limit = query.limit || 24;
+		const page = query.page || 1;
+		const skip = (page - 1) * limit;
 
+		if (query.page && query.limit) {
 			delete query.limit;
 			delete query.page;
-
-			const queryProduct = await browseProduct(query, skip, limit);
-
-			res.status(200).json({
-				message: "get product success",
-				count: queryProduct.length,
-				totalPage: totalPage,
-				data: queryProduct,
-			});
-		} else {
-			const limit = 24;
-			const page = 1;
-			const skip = (page - 1) * limit;
-			const totalPage = Math.ceil(queryProduct.length / limit);
-
-			const queryProduct = await browseProduct(query, skip, limit);
-
-			res.status(200).json({
-				message: "get product success",
-				count: queryProduct.length,
-				totalPage: totalPage,
-				data: queryProduct,
-			});
 		}
+
+		const queryProduct = await productService.browseProduct(query, skip, limit);
+
+		const count = queryProduct.length;
+		const totalPage = Math.ceil(count / limit);
+
+		res.status(200).json({
+			message: "get product success",
+			count: count,
+			totalPage: totalPage,
+			data: queryProduct,
+		});
 	} catch (error) {
 		next(error);
 	}
@@ -176,7 +160,7 @@ export const createProduct = async (req, res, next) => {
 			description,
 		};
 
-		const product = await createProduct(data);
+		const product = await productService.createProduct(data);
 
 		res.status(201).json({
 			message: `Create product success`,
@@ -191,13 +175,12 @@ export const updateProduct = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
 		const { ...editProduct } = req.body;
-
-		const product = await productModel.findById(productId);
+		const product = await productService.getProductById(productId);
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
 		}
 
-		await updateProduct(productId, editProduct);
+		await productService.updateProduct(productId, editProduct);
 
 		res.status(200).json({
 			message: `update product with id ${productId} success`,
@@ -210,12 +193,12 @@ export const updateProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
 	try {
 		const { productId } = req.params;
-		const product = await productModel.findById(productId);
+		const product = await productService.getProductById(productId);
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
 		}
 
-		await deleteProduct(productId);
+		await productService.deleteProduct(productId);
 
 		res.status(200).json({
 			message: `delete product id ${productId} success`,
