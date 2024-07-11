@@ -10,7 +10,11 @@ const orderSchema = new mongoose.Schema({
 	],
 	totalPrice: { type: Number, request: true },
 	customer: {
-		customerId: { type: String, request: true },
+		customerId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			request: true,
+		},
 		addressIndex: { type: Number, request: true },
 	},
 	status: {

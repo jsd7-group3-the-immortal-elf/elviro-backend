@@ -1,4 +1,6 @@
 import orderService from "../service/orderService.js";
+import mongoose from "mongoose";
+
 import {
 	BadRequestError,
 	UnAuthorizeError,
@@ -21,7 +23,9 @@ export const getUserId = async (req, res, next) => {
 		// console.log("Object : " + inputObjectId);
 		const user = await orderService.dataGetUserId(inputObjectId);
 		// console.log("ID User : ", user);
-		return res.status(200).json({ message: "Get User Order Test", data: user });
+		return res
+			.status(200)
+			.json({ message: "Get all order in user", data: user });
 	} catch (error) {
 		next(error);
 	}
@@ -29,12 +33,13 @@ export const getUserId = async (req, res, next) => {
 
 export const getUserOderId = async (req, res, next) => {
 	try {
-		const { userId, OderId } = req.params;
-		const inputObjectId = `ObjectId('${userId}')`;
-		// console.log("Object : " + inputObjectId);
-		const user = await orderService.dataGetUserOderId(inputObjectId, OderId);
-		// console.log("ID User : ", user);
-		return res.status(200).json({ message: "Get User Order Test", data: user });
+		const { userId, orderId } = req.params;
+		// const inputUserId = `ObjectId('${userId}')`;
+		// console.log("inputUserId  : " + inputUserId);
+		const user = await orderService.dataGetUserOderId(userId, orderId);
+		return res
+			.status(200)
+			.json({ message: "Get One order in user", data: user });
 	} catch (error) {
 		next(error);
 	}
