@@ -19,9 +19,9 @@ export const getAllOrder = async (req, res, next) => {
 export const getUserId = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
-		const inputObjectId = `ObjectId('${userId}')`;
+		// const inputObjectId = `ObjectId('${userId}')`;
 		// console.log("Object : " + inputObjectId);
-		const user = await orderService.dataGetUserId(inputObjectId);
+		const user = await orderService.dataGetUserId(userId);
 		// console.log("ID User : ", user);
 		return res
 			.status(200)
@@ -45,7 +45,7 @@ export const getUserOderId = async (req, res, next) => {
 	}
 };
 
-export const createOrder = async (req, res, next) => {
+export const PostCreateOrder = async (req, res, next) => {
 	try {
 		const { orderDetail, totalPrice, customer } = req.body;
 		const data = { orderDetail, totalPrice, customer };

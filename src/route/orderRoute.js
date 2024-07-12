@@ -1,7 +1,7 @@
 import express from "express";
 import {
 	getAllOrder,
-	createOrder,
+	PostCreateOrder,
 	getUserId,
 	getUserOderId,
 } from "../controller/orderController.js";
@@ -15,5 +15,5 @@ router.get("/:userId", getUserId);
 // get one Order in user
 router.get("/:userId/:orderId", getUserOderId);
 // post create order
-router.post("/", createOrder);
+router.post("/", PostCreateOrder);
 export default router;

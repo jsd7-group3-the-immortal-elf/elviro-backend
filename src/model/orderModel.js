@@ -4,13 +4,18 @@ const orderSchema = new mongoose.Schema({
 	orderDate: { type: Date, default: new Date().getTime() },
 	orderDetail: [
 		{
-			productId: { type: String, request: true },
+			productId: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Product",
+				request: true,
+			},
 			quantity: { type: Number, request: true },
 		},
 	],
 	totalPrice: { type: Number, request: true },
 	customer: {
 		customerId: {
+			// type: String,
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 			request: true,

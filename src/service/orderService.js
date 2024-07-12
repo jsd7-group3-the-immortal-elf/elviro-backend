@@ -10,15 +10,11 @@ const orderService = {
 		return orderModel.find({ "customer.customerId": data });
 	},
 
-	async dataGetUserOderId(userId, orderId) {
+	async dataGetUserOderId(userId) {
 		// const inputUserId = `ObjectId('${userId}')`;
-		const OrderId = new mongoose.Types.ObjectId(orderId);
-		return orderModel
-			.findOne({
-				"customer.customerId": userId,
-				// _id: OrderId,
-			})
-			.populate("customer");
+		// const OrderId = new mongoose.Types.ObjectId(orderId);
+		return orderModel.findById(userId);
+		// .populate("customer");
 	},
 
 	async dataCreateOrderData(data) {
