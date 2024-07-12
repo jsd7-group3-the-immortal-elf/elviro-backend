@@ -5,6 +5,7 @@ import {
 	createUser,
 	updateUser,
 	deleteUser,
+	userLogin,
 	
 } from "../controller/userController.js";
 
@@ -19,8 +20,10 @@ router.get("/:userId", getUserById);
 
 // router.get("/browse", async (req, res, next) => {});
 
+router.post("/login", userLogin);
+
 // // adminAuthMiddleware
-router.post("/", createUser);
+router.post("/register", createUser);
 
 // // adminAuthMiddleware
 router.patch("/:userId", updateUser);
