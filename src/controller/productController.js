@@ -116,7 +116,7 @@ export const browseProduct = async (req, res, next) => {
 		const page = query.page || 1;
 		const skip = (page - 1) * limit;
 
-		if (query.page && query.limit) {
+		if (query.page || query.limit) {
 			delete query.limit;
 			delete query.page;
 		}
