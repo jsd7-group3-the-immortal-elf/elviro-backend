@@ -1,26 +1,35 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-	orderDate: { type: Date, default: new Date().getTime() },
+	createOn: {
+		type: Date,
+		default: new Date().getTime(),
+	},
 	orderDetail: [
 		{
 			productId: {
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "Product",
+				type: String,
 				request: true,
 			},
-			quantity: { type: Number, request: true },
+			quantity: {
+				type: Number,
+				request: true,
+			},
 		},
 	],
-	totalPrice: { type: Number, request: true },
+	totalPrice: {
+		type: Number,
+		request: true,
+	},
 	customer: {
 		customerId: {
-			// type: String,
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
+			type: String,
 			request: true,
 		},
-		addressIndex: { type: Number, request: true },
+		addressIndex: {
+			type: Number,
+			request: true,
+		},
 	},
 	status: {
 		type: String,
@@ -37,4 +46,4 @@ const orderSchema = new mongoose.Schema({
 	},
 });
 
-export default mongoose.model("order", orderSchema);
+export default mongoose.model("Order", orderSchema);
