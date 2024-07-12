@@ -4,6 +4,7 @@ import {
 	PostCreateOrder,
 	getUserId,
 	getUserOderId,
+	updateOrder,
 } from "../controller/orderController.js";
 
 const router = express.Router();
@@ -19,5 +20,7 @@ router.get("/:userId/:orderId", getUserOderId);
 
 // post create order
 router.post("/", PostCreateOrder);
+
+router.patch("/:orderId", updateOrder);
 
 export default router;

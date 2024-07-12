@@ -109,3 +109,30 @@ export const PostCreateOrder = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const updateOrder = async (req, res, next) => {
+	try {
+		const { orderId } = req.params;
+		if (!orderId) {
+			throw new BadRequestError("OrderID is required.");
+		}
+
+		const order = await orderModel.findByIdAndUpdate(
+			orderId,
+			{
+				$set: { status: "Cancelled" },
+			},
+			{ new: true, runValidators: true }
+		);
+		if (!order) {
+			throw new NotFoundError("Order not found.");
+		}
+
+		res.status(200).json({
+			message: "Order cancelled successfully.",
+			data: order,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
