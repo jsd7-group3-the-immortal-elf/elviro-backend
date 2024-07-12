@@ -1,7 +1,8 @@
+import mongoose from "mongoose";
 import orderModel from "../model/orderModel.js";
 
 const orderService = {
-	async dataGetAllOrder() {
+	async getAllOrderService() {
 		return await orderModel.aggregate([
 			{
 				$lookup: {
@@ -52,7 +53,69 @@ const orderService = {
 		]);
 	},
 
-	async dataBrowseOrder(query) {
+	async getOrderByIdService(orderId) {
+		return await orderModel.aggregate([
+			{
+				$match: {
+					_id: new mongoose.Types.ObjectId(`${orderId}`),
+				},
+			},
+			{
+				$lookup: {
+					from: "products",
+					localField: "orderDetail.productId",
+					foreignField: "_id",
+					as: "productInfo",
+				},
+			},
+			{
+				$lookup: {
+					from: "users",
+					localField: "customer.customerId",
+					foreignField: "_id",
+					as: "customerInfo",
+				},
+			},
+			// {
+			// 	$unwind: "$orderDetail",
+			// },
+			{
+				$unwind: "$productInfo",
+			},
+			{
+				$group: {
+					_id: "$_id",
+					totalPrice: { $sum: "$productInfo.price" },
+					totalCost: { $sum: "$productInfo.cost" },
+					orderDetail: { $first: "$orderDetail" },
+					productInfo: { $push: "$productInfo" },
+					createOn: { $first: "$createOn" },
+					status: { $first: "$status" },
+					customer: { $first: "$customer" },
+					customerInfo: { $first: "$customerInfo" },
+				},
+			},
+			{
+				$unwind: "$customerInfo",
+			},
+			{
+				$project: {
+					createOn: 1,
+					status: 1,
+					totalPrice: 1,
+					totalCost: 1,
+					orderDetail: 1,
+					productInfo: 1,
+					profile: "$customerInfo.profile",
+					address: {
+						$arrayElemAt: ["$customerInfo.address", 0],
+					},
+				},
+			},
+		]);
+	},
+
+	async browseOrderService(query) {
 		return await orderModel.aggregate([
 			{ $match: query },
 			{

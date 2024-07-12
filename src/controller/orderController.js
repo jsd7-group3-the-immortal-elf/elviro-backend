@@ -1,6 +1,4 @@
 import orderService from "../service/orderService.js";
-import orderModel from "../model/orderModel.js";
-
 import {
 	BadRequestError,
 	UnAuthorizeError,
@@ -9,13 +7,31 @@ import {
 
 export const getAllOrder = async (req, res, next) => {
 	try {
-		const allOrder = await orderService.dataGetAllOrder();
+		const allOrder = await orderService.getAllOrderService();
 
 		if (allOrder.length == 0) throw new NotFoundError("can't found order");
 
 		res.status(200).json({
 			message: "get all order success",
 			data: allOrder,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getOrderById = async (req, res, next) => {
+	try {
+		// !admin > use userId
+		let { orderId } = req.params;
+
+		const order = await orderService.getOrderByIdService(orderId);
+
+		if (order.length == 0) throw new NotFoundError("can't found order");
+
+		res.status(200).json({
+			message: `get order with id ${orderId} success`,
+			data: order[0],
 		});
 	} catch (error) {
 		next(error);
@@ -29,7 +45,7 @@ export const browseOrder = async (req, res, next) => {
 			return next();
 		}
 
-		const allOrder = await orderService.dataBrowseOrder();
+		const allOrder = await orderService.browseOrderService();
 
 		if (allOrder.length == 0) throw new NotFoundError("can't found order");
 
@@ -42,7 +58,7 @@ export const browseOrder = async (req, res, next) => {
 	}
 };
 
-export const getOrderByUserId = async (req, res, next) => {
+export const getAllOrderByUserId = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
 		// const inputObjectId = `ObjectId('${userId}')`;
@@ -59,7 +75,7 @@ export const getOrderByUserId = async (req, res, next) => {
 	}
 };
 
-export const getOrderById = async (req, res, next) => {
+export const getOneOrderByUserId = async (req, res, next) => {
 	try {
 		const { userId, orderId } = req.params;
 		// const inputUserId = `ObjectId('${userId}')`;
