@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import orderModel from "../model/orderModel.js";
 
 const orderService = {
@@ -10,10 +9,30 @@ const orderService = {
 		return orderModel.find({ "customer.customerId": data });
 	},
 
-	async dataGetUserOderId(userId) {
+	async dataGetUserOderId(userId, orderId) {
 		// const inputUserId = `ObjectId('${userId}')`;
 		// const OrderId = new mongoose.Types.ObjectId(orderId);
-		return orderModel.findById(userId);
+		const order = orderModel.find({
+			"customer.customerId": userId,
+			_id: orderId,
+		});
+		const aggregate = orderModel.aggregate([
+			{ $match: { "customer.customerId": userId } },
+			{
+				$lookup: {
+					from: "User",
+					localField: "customer.customerId",
+					foreignField: "_id",
+					as: "customer",
+				},
+			},
+			{
+				$project: {
+					address: 1,
+				},
+			},
+		]);
+		return { order, aggregate };
 		// .populate("customer");
 	},
 
