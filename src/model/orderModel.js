@@ -8,7 +8,8 @@ const orderSchema = new mongoose.Schema({
 	orderDetail: [
 		{
 			productId: {
-				type: String,
+				type: mongoose.Schema.Types.ObjectID,
+				ref: "products",
 				request: true,
 			},
 			quantity: {
@@ -23,7 +24,8 @@ const orderSchema = new mongoose.Schema({
 	},
 	customer: {
 		customerId: {
-			type: String,
+			type: mongoose.Schema.Types.ObjectID,
+			ref: "users",
 			request: true,
 		},
 		addressIndex: {

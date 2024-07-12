@@ -1,26 +1,31 @@
 import express from "express";
 import {
 	getAllOrder,
-	PostCreateOrder,
-	getUserId,
-	getUserOderId,
-	updateOrder,
+	browseOrder,
+	getOrderById,
+	getAllOrderByUserId,
+	getOneOrderByUserId,
+	createOrder,
 } from "../controller/orderController.js";
 
 const router = express.Router();
 
-// get All Order All user
+// adminAuthMiddleware
 router.get("/", getAllOrder);
 
-// get All Order in user
-router.get("/:userId", getUserId);
+// adminAuthMiddleware
+router.get("/:orderId", getOrderById);
 
-// get one Order in user
-router.get("/:userId/:orderId", getUserOderId);
+// userAuthMiddleware
+router.get("/:userId", getAllOrderByUserId);
 
-// post create order
-router.post("/", PostCreateOrder);
+// userAuthMiddleware
+router.get("/:userId/:orderId", getOneOrderByUserId);
 
+// userAuthMiddleware
+router.post("/", createOrder);
+
+// userAuthMiddleware
 router.patch("/:orderId", updateOrder);
 
 export default router;
