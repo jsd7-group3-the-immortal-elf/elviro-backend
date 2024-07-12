@@ -1,11 +1,19 @@
 import express from "express";
-import * as orderController from "../controller/orderController.js";
-import orderService from "../service/orderService.js";
+import {
+	getAllOrder,
+	PostCreateOrder,
+	getUserId,
+	getUserOderId,
+} from "../controller/orderController.js";
 
 const router = express.Router();
 
 // get All Order All user
-router.get("/", orderController.getAllOder);
+router.get("/", getAllOrder);
+// get All Order in user
+router.get("/:userId", getUserId);
+// get one Order in user
+router.get("/:userId/:orderId", getUserOderId);
 // post create order
-router.psdt("/", orderController.getAllOder);
+router.post("/", PostCreateOrder);
 export default router;

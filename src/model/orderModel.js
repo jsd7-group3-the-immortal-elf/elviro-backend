@@ -1,28 +1,40 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-	orderDat: { type: Date, default: new Date().getTime() },
-	orderDetail: {
-		productId: { type: Number, request: true },
-		quantity: { type: Number, request: true },
-	},
+	orderDate: { type: Date, default: new Date().getTime() },
+	orderDetail: [
+		{
+			productId: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Product",
+				request: true,
+			},
+			quantity: { type: Number, request: true },
+		},
+	],
 	totalPrice: { type: Number, request: true },
 	customer: {
-		customerId: { type: Number, request: true },
+		customerId: {
+			// type: String,
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			request: true,
+		},
 		addressIndex: { type: Number, request: true },
 	},
 	status: {
 		type: String,
 		enum: [
-			"Pending", // สั่งorderแล้ว
-			"Cancelled", //กดยกเลิก
-			"Processing", //adminกำลังเตรียมของ
-			"picked", //admin picked
-			"Shipped", //admin จัดสังแล้ว
-			"Complete", //สำเร็จ
+			"Pending",
+			"Confirmed",
+			"Processing",
+			"Picked",
+			"Shipped",
+			"Delivered",
+			"Cancelled",
 		],
 		default: "Pending",
 	},
 });
 
-module.exports = mongoose.model("order", orderSchema);
+export default mongoose.model("order", orderSchema);
