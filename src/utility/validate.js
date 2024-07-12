@@ -1,7 +1,22 @@
 import Joi from "joi";
 
-//รอ orderModel+++
-const orderSchema = Joi.object({});
+//-----check ว่าต้อง validate อะไรเพิ่ม
+//orderModel
+const orderSchema = Joi.object({
+	orderDate: Joi.date().default(() => new Date(), "current date"),
+	orderDetail: Joi.array().items(
+		Joi.object({
+			productId: Joi.object({
+				type: Joi.string(),
+			}),
+			quantity: Joi.number().required(),
+		})
+	),
+	totalPrice: Joi.number().required(),
+	customer: Joi.object({
+		customerId,
+	}),
+});
 
 //productModel
 const productSchema = Joi.object({
