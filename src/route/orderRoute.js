@@ -6,6 +6,7 @@ import {
 	getAllOrderByUserId,
 	getOneOrderByUserId,
 	createOrder,
+	updateOrder,
 } from "../controller/orderController.js";
 
 const router = express.Router();
