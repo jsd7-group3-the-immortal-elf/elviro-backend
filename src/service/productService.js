@@ -10,7 +10,10 @@ const productService = {
 	},
 
 	async browseProduct(query, skip, limit) {
-		return productModel.find(query).skip(skip).limit(limit);
+		if (limit) {
+			return productModel.find(query).skip(skip).limit(limit);
+		}
+		return productModel.find(query);
 	},
 
 	async createProduct(data) {
