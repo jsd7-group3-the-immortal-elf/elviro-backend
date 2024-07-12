@@ -60,29 +60,52 @@ export const browseProduct = async (req, res, next) => {
 
 		// filter
 		if (query.rooms) {
-			query.rooms = { $all: query.rooms.split("&") };
+			query.rooms = { $in: query.rooms };
 		}
 		if (query.price) {
-			const price = query.price.split(" ");
-			query.price = { $gte: price[0], $lte: price[1] };
+			// const price = query.price.split(" ");
+			query.price = {
+				$gte: Number(query.price[0]),
+				$lte: Number(query.price[1]),
+			};
 		}
 		if (query.cost) {
-			const cost = query.cost.split(" ");
-			query.cost = { $gte: cost[0], $lte: cost[1] };
+			// const cost = query.cost.split(" ");
+			query.cost = {
+				$gte: Number(query.cost[0]),
+				$lte: Number(query.cost[1]),
+			};
 		}
 		if (query.width) {
-			const width = query.width.split(" ");
-			query["dimension.width"] = { $gte: width[0], $lte: width[1] };
+			// const width = query.width.split(" ");
+			query["dimension.width"] = {
+				$gte: Number(query.width[0]),
+				$lte: Number(query.width[1]),
+			};
 			delete query.width;
 		}
 		if (query.depth) {
-			const depth = query.depth.split(" ");
-			query["dimension.depth"] = { $gte: depth[0], $lte: depth[1] };
+			// const depth = query.depth.split(" ");
+			query["dimension.depth"] = {
+				$gte: Number(query.depth[0]),
+				$lte: Number(query.depth[1]),
+			};
 			delete query.depth;
 		}
+		if (query.depthExtend) {
+			// const depth = query.depth.split(" ");
+			query["dimension.depthExtend"] = {
+				$gte: Number(query.depthExtend[0]),
+				$lte: Number(query.depthExtend[1]),
+			};
+			delete query.depthExtend;
+		}
 		if (query.height) {
-			const height = query.height.split(" ");
-			query["dimension.height"] = { $gte: height[0], $lte: height[1] };
+			// const height = query.height.split(" ");
+			query["dimension.height"] = {
+				$gte: Number(query.height[0]),
+				$lte: Number(query.height[1]),
+			};
 			delete query.height;
 		}
 
@@ -98,16 +121,19 @@ export const browseProduct = async (req, res, next) => {
 			delete query.page;
 		}
 
-		const queryProduct = await productService.browseProduct(query, skip, limit);
+		console.log(query);
 
-		const count = queryProduct.length;
-		const totalPage = Math.ceil(count / limit);
+		const queryProduct = await productService.browseProduct(query);
+		const limitProduct = await productService.browseProduct(query, skip, limit);
+
+		const totalProduct = queryProduct.length;
+		const totalPage = Math.ceil(totalProduct / limit);
 
 		res.status(200).json({
-			message: "get product success",
-			count: count,
+			message: "get query product success",
+			totalProduct: totalProduct,
 			totalPage: totalPage,
-			data: queryProduct,
+			data: limitProduct,
 		});
 	} catch (error) {
 		next(error);
