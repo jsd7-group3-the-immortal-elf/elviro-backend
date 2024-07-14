@@ -50,6 +50,7 @@ const orderService = {
 					lastName: "$customer.customerInfo.profile.lastName",
 				},
 			},
+			{ $sort: { _id: 1 } },
 		]);
 	},
 
@@ -203,6 +204,10 @@ const orderService = {
 		// await order.save();
 		// return order;
 		return orderModel.insertMany(data);
+	},
+
+	async updateOrderService(orderId, status) {
+		return orderModel.findByIdAndUpdate(orderId, { status: status });
 	},
 };
 export default orderService;

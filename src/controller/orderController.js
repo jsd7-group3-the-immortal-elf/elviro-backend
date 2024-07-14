@@ -50,7 +50,7 @@ export const browseOrder = async (req, res, next) => {
 		if (allOrder.length == 0) throw new NotFoundError("can't found order");
 
 		res.status(200).json({
-			message: "get all order success",
+			message: "get query order success",
 			data: allOrder,
 		});
 	} catch (error) {
@@ -109,17 +109,15 @@ export const createOrder = async (req, res, next) => {
 export const updateOrder = async (req, res, next) => {
 	try {
 		const { orderId } = req.params;
-		if (!orderId) {
-			throw new BadRequestError("OrderID is required.");
+		const { status } = req.body;
+		console.log(status);
+
+		if (!orderId || !status) {
+			throw new BadRequestError("Order ID and status are required");
 		}
 
-		const order = await orderModel.findByIdAndUpdate(
-			orderId,
-			{
-				$set: { status: "Cancelled" },
-			},
-			{ new: true, runValidators: true }
-		);
+		const order = await orderService.updateOrderService(orderId, status);
+
 		if (!order) {
 			throw new NotFoundError("Order not found.");
 		}

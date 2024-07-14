@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 // adminAuthMiddleware
-router.get("/", getAllOrder);
+router.get("/", browseOrder, getAllOrder);
 
 // adminAuthMiddleware
 router.get("/:orderId", getOrderById);
