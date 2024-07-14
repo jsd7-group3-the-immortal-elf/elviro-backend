@@ -1,9 +1,35 @@
 import Joi from "joi";
 
-//รอ orderModel+++
-const orderSchema = Joi.object({});
+// Order Model
+const orderSchema = Joi.object({
+	orderDate: Joi.date().default(() => new Date(), "current date"),
+	orderDetail: Joi.array().items(
+		Joi.object({
+			productId: Joi.string().required(),
+			quantity: Joi.number().required(),
+		})
+	),
+	totalPrice: Joi.number().required(),
+	customer: Joi.object({
+		customerId: Joi.string().required(),
+		addressIndex: Joi.number().required(),
+	}),
+	status: Joi.object({
+		type: Joi.string()
+			.valid(
+				"Pending",
+				"Confirmed",
+				"Processing",
+				"Picked",
+				"Shipped",
+				"Delivered",
+				"Cancelled"
+			)
+			.default("Pending"),
+	}),
+});
 
-//productModel
+// Product Model
 const productSchema = Joi.object({
 	productName: Joi.string().required(),
 	productImage: Joi.string().required(),
@@ -28,31 +54,31 @@ const productSchema = Joi.object({
 	deleteOn: Joi.date().default(null),
 });
 
-//userModel
+// User Model
 const userSchema = Joi.object({
 	profile: Joi.object({
-		firstName: Joi.string().required,
-		lastName: Joi.string().required,
+		firstName: Joi.string().required(),
+		lastName: Joi.string().required(),
 		image: Joi.string(),
-		email: Joi.string().required,
+		email: Joi.string().required(),
 		phone: Joi.string(),
 	}),
 	address: Joi.array().items(
 		Joi.object({
-			firstNameAdr: Joi.string().required,
-			lastNameAdr: Joi.string().required,
-			phoneAdr: Joi.string().required,
-			address: Joi.string().required,
-			province: Joi.string().required,
-			district: Joi.string().required,
-			subDistrict: Joi.string().required,
-			postalCode: Joi.string().required,
+			firstNameAdr: Joi.string().required(),
+			lastNameAdr: Joi.string().required(),
+			phoneAdr: Joi.string().required(),
+			address: Joi.string().required(),
+			province: Joi.string().required(),
+			district: Joi.string().required(),
+			subDistrict: Joi.string().required(),
+			postalCode: Joi.string().required(),
 			default: Joi.boolean().default(false),
 		})
 	),
 	account: Joi.object({
 		username: Joi.string(),
-		password: Joi.string().required,
+		password: Joi.string().required(),
 	}),
 	cardInfo: Joi.object({
 		cardNumber: Joi.string(),
@@ -62,36 +88,28 @@ const userSchema = Joi.object({
 	}),
 	cart: Joi.array().items(
 		Joi.object({
-			productId: Joi.string().required,
+			productId: Joi.string().required(),
 			quantity: Joi.number().min(0),
-			isChecked: Joi.boolean.default(false),
+			isChecked: Joi.boolean().default(false),
 		})
 	),
-	createOn: Joi.object({
-		type: Joi.date(),
-		default: Joi.date()
-			.timestamp()
-			.default(() => Date.now(), "current timestamp"), //เช็คอีกที
-	}),
-	deleteOn: Joi.object({
-		type: Joi.date(),
-		default: Joi.date().allow(null).default(null),
-	}),
-	isAdmin: Joi.object({
-		type: Joi.boolean().default(false),
-	}),
+	createOn: Joi.date()
+		.timestamp()
+		.default(() => Date.now(), "current timestamp"),
+	deleteOn: Joi.date().allow(null).default(null),
+	isAdmin: Joi.boolean().default(false),
 });
 
-//----validate---//
-
-//รอ orderModel
-const validateOrder = async (date) => {
+// Validate Functions
+const validateOrder = async (data) => {
 	return orderSchema.validate(data);
 };
-const validateProduct = async (date) => {
+
+const validateProduct = async (data) => {
 	return productSchema.validate(data);
 };
-const validateUser = async (date) => {
+
+const validateUser = async (data) => {
 	return userSchema.validate(data);
 };
 

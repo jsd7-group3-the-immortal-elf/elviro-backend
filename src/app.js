@@ -7,7 +7,7 @@ import cors from "cors";
 import helmet from "helmet";
 
 import cartRoute from "./route/cartRoute.js";
-// import orderRoute from "./route/orderRoute.js";
+import orderRoute from "./route/orderRoute.js";
 import productRoute from "./route/productRoute.js";
 import userRoute from "./route/userRoute.js";
 
@@ -46,7 +46,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //ใส่ userAuthMiddleWare ไปด้วย ใส่แค่ตรงนี้ก็
 app.use("/cart", cartRoute);
-// app.use("/orders", orderRoute);
+app.use("/orders", orderRoute);
 app.use("/products", productRoute);
 app.use("/users", userRoute);
 
