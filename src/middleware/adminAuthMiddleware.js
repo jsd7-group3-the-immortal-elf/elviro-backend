@@ -1,6 +1,6 @@
 import { verify } from "../utility/token.js";
 import { UnAuthorizeError } from "../utility/error.js";
-import userService from "../service/userService.js";
+import { getUserByIdService } from "../service/userService.js";
 
 const authenticateMiddleware = async (req, res, next) => {
 	try {
@@ -8,7 +8,7 @@ const authenticateMiddleware = async (req, res, next) => {
 		if (!token) throw new UnAuthorizeError("Unauthenticated");
 
 		const decoded = verify(token);
-		const user = await userService.getUserById(decoded.id);
+		const user = await getUserByIdService(decoded.id);
 		if (!user) throw new UnAuthorizeError("Unauthenticated");
 		if (!user.isAdmin) throw new UnAuthorizeError("Unauthenticated");
 
