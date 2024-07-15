@@ -1,5 +1,5 @@
-// import cartService from "../service/cartService.js";
 import userModel from "../model/userModel.js";
+import cartService from "../service/cartService.js";
 import {
 	BadRequestError,
 	UnAuthorizeError,
@@ -14,7 +14,9 @@ import {
 export const getCartByUser = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
-		const user = await userModel.findById(userId); //function หลัก
+		console.log(userId);
+		const user = await cartService.getProductsByCart(userId);
+		console.log(userId); //function หลัก
 		const { cart } = user;
 		return res.status(200).json({
 			message: "Get the cart successful.",
