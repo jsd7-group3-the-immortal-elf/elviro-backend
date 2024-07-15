@@ -70,9 +70,9 @@ export const createUser = async (req, res, next) => {
 
 export const userLogin = async (req, res, next) => {
 	try {
-		const { username, password } = req.body;
+		const { email, password } = req.body;
 
-		const user = await loginService(username);
+		const user = await loginService(email);
 		if (!user) {
 			throw new BadRequestError(`username/email or password is invalid`);
 		}

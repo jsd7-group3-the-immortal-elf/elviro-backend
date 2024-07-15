@@ -8,25 +8,27 @@ import {
 	createOrder,
 	updateOrder,
 } from "../controller/orderController.js";
+import adminAuthMiddleware from "../middleware/adminAuthMiddleware.js";
+import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
 
 const router = express.Router();
 
-// userAuthMiddleware
-router.get("/", browseOrder, getAllOrder);
+router.get(
+	"/",
+	userAuthMiddleware,
+	getAllOrderByUserId,
+	browseOrder,
+	getAllOrder
+);
 
-// adminAuthMiddleware
-router.get("/:orderId", getOrderById);
+router.get("/:orderId", adminAuthMiddleware, getOrderById);
 
-// userAuthMiddleware
 // router.get("/:userId", getAllOrderByUserId);
 
-// userAuthMiddleware
-router.get("/:userId/:orderId", getOneOrderByUserId);
+router.get("/:userId/:orderId", userAuthMiddleware, getOneOrderByUserId);
 
-// userAuthMiddleware
-router.post("/", createOrder);
+router.post("/", userAuthMiddleware, createOrder);
 
-// userAuthMiddleware
-router.patch("/:orderId", updateOrder);
+router.patch("/:orderId", userAuthMiddleware, updateOrder);
 
 export default router;
