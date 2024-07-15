@@ -23,7 +23,7 @@ router.get("/:userId", getUserById);
 router.post("/login", userLogin);
 
 // // adminAuthMiddleware
-router.post("/register", createUser);
+router.post("/create-account", createUser);
 
 // // adminAuthMiddleware
 router.patch("/:userId", updateUser);
