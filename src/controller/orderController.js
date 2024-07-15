@@ -1,5 +1,4 @@
 import orderService from "../service/orderService.js";
-import mongoose from "mongoose";
 
 import {
 	BadRequestError,
@@ -36,6 +35,9 @@ export const getUserOderId = async (req, res, next) => {
 		const { userId, orderId } = req.params;
 		// const inputUserId = `ObjectId('${userId}')`;
 		// console.log("inputUserId  : " + inputUserId);
+		// console.log("userId : " + userId);
+		// console.log("---------------");
+		// console.log("orderId :" + orderId);
 		const user = await orderService.dataGetUserOderId(userId, orderId);
 		return res
 			.status(200)

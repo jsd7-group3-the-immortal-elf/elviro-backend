@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import orderModel from "../model/orderModel.js";
 
 const orderService = {
@@ -12,27 +13,86 @@ const orderService = {
 	async dataGetUserOderId(userId, orderId) {
 		// const inputUserId = `ObjectId('${userId}')`;
 		// const OrderId = new mongoose.Types.ObjectId(orderId);
-		const order = orderModel.find({
-			"customer.customerId": userId,
-			_id: orderId,
-		});
-		const aggregate = orderModel.aggregate([
-			{ $match: { "customer.customerId": userId } },
+		const outAggregate = orderModel
+			.find({
+				"customer.customerId": userId,
+				_id: orderId,
+			})
+			.populate("customer.customerId");
+		// const outAggregate = await orderModel.aggregate([
+		// 	{
+		// 		$match: {
+		// 			"customer.customerId": new mongoose.Types.ObjectId(userId),
+		// 			_id: new mongoose.Types.ObjectId(orderId),
+		// 			// "customer.customerId": userId,
+		// 			// _id: orderId,
+		// 		},
+		// 	},
+		// 	{
+		// 		$lookup: {
+		// 			from: "users",
+		// 			localField: "customer.customerId",
+		// 			foreignField: "_id",
+		// 			as: "customer",
+		// 		},
+		// 		// $project: {
+		// 		// 	address: 1,
+		// 		// },
+		// 	},
+		// ]);
+		// ------------------------
+		// .aggregate([
+		// 	{
+		// 		$match: {
+		// 			"customer.customerId": ObjectId('668b6edc85daeb3a4220771a'),
+		// 			_id: ObjectId('6690aba06e27230744df5fbd'),
+		// 		},
+		// 	},
+		// 	{
+		// 		$lookup: {
+		// 			from: "users",
+		// 			localField: "customer.customerId",
+		// 			foreignField: "_id",
+		// 			as: "customer.customerDetails",
+		// 		}},{
+		//     $project: {
+		//         orderDate: 1,
+		//         totalPrice: 1,
+		//         status: 1,
+		// 						createOn:1,
+		//         "customer.customerId": 1,
+		// 						"customer.customerDetails.address":1,
+
+		//     }
+		// 	},])
+
+		orders.aggregate([
+			{
+				$match: {
+					"customer.customerId": ObjectId("668b6edc85daeb3a4220771a"),
+					_id: ObjectId("6690aba06e27230744df5fbd"),
+				},
+			},
 			{
 				$lookup: {
-					from: "User",
+					from: "users",
 					localField: "customer.customerId",
 					foreignField: "_id",
-					as: "customer",
+					as: "customer.customerDetails",
 				},
 			},
 			{
 				$project: {
-					address: 1,
+					orderDate: 1,
+					totalPrice: 1,
+					status: 1,
+					createOn: 1,
+					"customer.customerId": 1,
+					"customer.customerDetails.address": 1,
 				},
 			},
 		]);
-		return { order, aggregate };
+		return outAggregate;
 		// .populate("customer");
 	},
 
