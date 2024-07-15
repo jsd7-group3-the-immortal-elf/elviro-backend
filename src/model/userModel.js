@@ -12,17 +12,17 @@ const userSchema = new mongoose.Schema({
 		{
 			firstNameAdr: { type: String, required: true },
 			lastNameAdr: { type: String, required: true },
-			phoneAdr: { type: String, required: true },
-			address: { type: String, required: true },
-			province: { type: String, required: true },
-			district: { type: String, required: true },
-			subDistrict: { type: String, required: true },
-			postalCode: { type: String, required: true },
+			phoneAdr: { type: String },
+			address: { type: String },
+			province: { type: String },
+			district: { type: String },
+			subDistrict: { type: String },
+			postalCode: { type: String },
 			default: { type: Boolean, default: false },
 		},
 	],
 	account: {
-		username: { type: String },
+		username: { type: String, required: true },
 		password: { type: String, required: true },
 	},
 	cardInfo: {
@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema({
 	},
 	cart: [
 		{
-			productId: { type: String, required: true },
-			quantity: { type: Number, min: 0, required: true },
+			productId: { type: String },
+			quantity: { type: Number, min: 0 },
 			isChecked: { type: Boolean, default: false },
 		},
 	],

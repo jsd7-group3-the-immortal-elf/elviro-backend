@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 
 import cartRoute from "./route/cartRoute.js";
 import orderRoute from "./route/orderRoute.js";
@@ -43,6 +44,8 @@ app.use(express.json());
 
 // URL Encoded Body Parser
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 //ใส่ userAuthMiddleWare ไปด้วย ใส่แค่ตรงนี้ก็
 app.use("/cart", cartRoute);

@@ -1,15 +1,19 @@
-import userModel from "../model/userModel.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { hashPassword, comparePassword } from "../utility/hash.js";
+import { sign } from "../utility/token.js";
+import { BadRequestError, NotFoundError } from "../utility/error.js";
 import {
-	BadRequestError,
-	UnAuthorizeError,
-	NotFoundError,
-} from "../utility/error.js";
+	getAllUserService,
+	getUserByIdService,
+	createUserService,
+	updateUserService,
+	deleteUserService,
+	loginService,
+} from "../service/userService.js";
 
 export const getAllUsers = async (req, res, next) => {
 	try {
-		const allUsers = await userModel.find();
+		const allUsers = await getAllUserService();
+
 		res.status(200).json({
 			message: "get all users success",
 			data: allUsers,
@@ -22,7 +26,7 @@ export const getAllUsers = async (req, res, next) => {
 export const getUserById = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
-		const user = await userModel.findById(userId);
+		const user = await getUserByIdService(userId);
 
 		if (!user) {
 			throw new NotFoundError(`User with id ${userId} is not found`);
@@ -45,95 +49,19 @@ export const createUser = async (req, res, next) => {
 			throw new BadRequestError("All field is require");
 		}
 
-		const salt = await bcrypt.genSalt(10);
-		const hashedPassword = await bcrypt.hash(account.password, salt);
+		const hashedPassword = await hashPassword(account.password);
 
-		const user = new userModel({
+		console.log(hashedPassword);
+
+		const data = {
 			profile,
 			account: { ...account, password: hashedPassword },
-		});
+		};
 
-		await user.save();
+		await createUserService(data);
 
 		res.status(201).json({
 			message: `Create user success`,
-			data: user,
-		});
-	} catch (error) {
-		next(error);
-	}
-};
-
-export const updateUser = async (req, res, next) => {
-	try {
-		const { userId } = req.params;
-		const { account = {}, ...editUser } = req.body;
-		const { password, ...accountFileds } = account;
-		console.log(req.body);
-
-		const user = await userModel.findById(userId);
-		console.log(userId);
-
-		if (!user) {
-			throw new NotFoundError(`User with id ${userId} is not found`);
-		}
-
-		const updateData = {};
-
-		if (password) {
-			const salt = await bcrypt.genSalt(10);
-			const hashedPassword = await bcrypt.hash(password, salt);
-			updateData["account.password"] = hashedPassword;
-		}
-
-		const buildUpdateData = (data, prefix = "") => {
-			for (const key in data) {
-				if (
-					typeof data[key] === "object" &&
-					data[key] !== null &&
-					!Array.isArray(data[key])
-				) {
-					buildUpdateData(data[key], `${prefix}${key}.`);
-				} else {
-					updateData[`${prefix}${key}`] = data[key];
-				}
-			}
-		};
-		buildUpdateData(accountFileds, "account.");
-
-		buildUpdateData(editUser);
-		console.log("Update Data:", updateData);
-
-		const updatedUser = await userModel.findByIdAndUpdate(
-			userId,
-			{ $set: updateData },
-			{ new: true, runValidators: true }
-		);
-
-		res.status(200).json({
-			message: `update user with id ${userId} success`,
-			user: updatedUser,
-		});
-	} catch (error) {
-		next(error);
-	}
-};
-
-export const deleteUser = async (req, res, next) => {
-	try {
-		const { userId } = req.params;
-		const user = await userModel.findById(userId);
-
-		if (!user) {
-			throw new NotFoundError(`User with id ${userId} is not found`);
-		}
-		await userModel.findByIdAndUpdate(userId, {
-			deleteOn: new Date().getTime(),
-		});
-
-		res.status(200).json({
-			message: `delete id ${userId} success`,
-			data: user,
 		});
 	} catch (error) {
 		next(error);
@@ -142,32 +70,86 @@ export const deleteUser = async (req, res, next) => {
 
 export const userLogin = async (req, res, next) => {
 	try {
-		const { username, password } = req.body.account;
-		// console.log('boyd',req.body);
-		// console.log("send", username, password);
-		const user = await userModel.findOne({ "account.username": username });
-		// console.log('password', user.account.password)
+		const { username, password } = req.body;
+
+		const user = await loginService(username);
 		if (!user) {
-			throw new UnAuthorizeError(`Ueser ${username} is not found`);
+			throw new BadRequestError(`username/email or password is invalid`);
 		}
-		const isPasswordValid = await bcrypt.compare(
+
+		const isPasswordValid = await comparePassword(
 			password,
 			user.account.password
 		);
 		if (!isPasswordValid) {
-			throw new UnAuthorizeError(
-				`Password for user ${username} dose not match`
-			);
+			throw new BadRequestError(`username/email or password is invalid`);
 		}
-		const payload = { id: user._id, username: user.account.username };
 
-		const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
-			expiresIn: "36000m",
-		});
+		const payload = {
+			id: user._id,
+			isAdmin: user.isAdmin,
+		};
+		const token = sign(payload);
+
+		res
+			.cookie("access_token", token, { httpOnly: true })
+			.status(200)
+			.json({ message: `login success` });
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const updateUser = async (req, res, next) => {
+	try {
+		// cookie > token > verify > id > findbyid > canedit
+		// user edit token?
+		const { user } = req;
+		const { ...editUser } = req.body;
+
+		// const { account = {}, ...editUser } = req.body;
+		// const { password, ...accountFields } = account;
+
+		// const updateData = {};
+
+		if (editUser.account.password) {
+			editUser.account.password = await hashPassword(editUser.account.password);
+		}
+
+		// const buildUpdateData = (data, prefix = "") => {
+		// 	for (const key in data) {
+		// 		if (
+		// 			typeof data[key] === "object" &&
+		// 			data[key] !== null &&
+		// 			!Array.isArray(data[key])
+		// 		) {
+		// 			buildUpdateData(data[key], `${prefix}${key}.`);
+		// 		} else {
+		// 			updateData[`${prefix}${key}`] = data[key];
+		// 		}
+		// 	}
+		// };
+		// buildUpdateData(accountFields, "account.");
+		// buildUpdateData(editUser);
+
+		await updateUserService(user._id, editUser);
+
 		res.status(200).json({
-			message: `login user ${user.account.username} success`,
-			data: user.account,
-			accessToken,
+			message: `update user success`,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const deleteUser = async (req, res, next) => {
+	try {
+		const { user } = req;
+
+		await deleteUserService(user._id);
+
+		res.status(200).json({
+			message: `delete user success`,
 		});
 	} catch (error) {
 		next(error);
