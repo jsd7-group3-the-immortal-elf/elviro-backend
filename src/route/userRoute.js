@@ -7,16 +7,14 @@ import {
 	deleteUser,
 	userLogin,
 } from "../controller/userController.js";
-
-// import adminAuthMiddleware from "../middleware/adminAuthMiddleware";
+import adminAuthMiddleware from "../middleware/adminAuthMiddleware.js";
 import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
+router.get("/", adminAuthMiddleware, getAllUsers);
 
-// userAuthMiddleware
-router.get("/:userId", getUserById);
+router.get("/:userId", userAuthMiddleware, getUserById);
 
 router.post("/create-account", createUser);
 
@@ -24,7 +22,6 @@ router.post("/login", userLogin);
 
 router.patch("/:userId", userAuthMiddleware, updateUser);
 
-// userAuthMiddleware
-router.delete("/:userId", deleteUser);
+router.delete("/:userId", userAuthMiddleware, deleteUser);
 
 export default router;
