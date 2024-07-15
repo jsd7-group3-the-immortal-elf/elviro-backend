@@ -6,10 +6,19 @@ import {
 	UnAuthorizeError,
 	NotFoundError,
 } from "../utility/error.js";
+import {
+	getAllUserService,
+	getUserByIdService,
+	createUserService,
+	updateUserService,
+	deleteUserService,
+	loginService,
+} from "../service/userService.js";
 
 export const getAllUsers = async (req, res, next) => {
 	try {
-		const allUsers = await userModel.find();
+		const allUsers = await getAllUserService();
+
 		res.status(200).json({
 			message: "get all users success",
 			data: allUsers,
@@ -22,7 +31,7 @@ export const getAllUsers = async (req, res, next) => {
 export const getUserById = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
-		const user = await userModel.findById(userId);
+		const user = await getUserByIdService(userId);
 
 		if (!user) {
 			throw new NotFoundError(`User with id ${userId} is not found`);
@@ -48,12 +57,12 @@ export const createUser = async (req, res, next) => {
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(account.password, salt);
 
-		const user = new userModel({
+		const data = {
 			profile,
 			account: { ...account, password: hashedPassword },
-		});
+		};
 
-		await user.save();
+		const user = await createUserService(data);
 
 		res.status(201).json({
 			message: `Create user success`,
@@ -68,11 +77,9 @@ export const updateUser = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
 		const { account = {}, ...editUser } = req.body;
-		const { password, ...accountFileds } = account;
-		console.log(req.body);
+		const { password, ...accountFields } = account;
 
-		const user = await userModel.findById(userId);
-		console.log(userId);
+		const user = await getUserByIdService(userId);
 
 		if (!user) {
 			throw new NotFoundError(`User with id ${userId} is not found`);
@@ -99,20 +106,14 @@ export const updateUser = async (req, res, next) => {
 				}
 			}
 		};
-		buildUpdateData(accountFileds, "account.");
+		buildUpdateData(accountFields, "account.");
 
 		buildUpdateData(editUser);
-		console.log("Update Data:", updateData);
 
-		const updatedUser = await userModel.findByIdAndUpdate(
-			userId,
-			{ $set: updateData },
-			{ new: true, runValidators: true }
-		);
+		await updateUserService(userId, updateData);
 
 		res.status(200).json({
 			message: `update user with id ${userId} success`,
-			user: updatedUser,
 		});
 	} catch (error) {
 		next(error);
@@ -122,14 +123,13 @@ export const updateUser = async (req, res, next) => {
 export const deleteUser = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
-		const user = await userModel.findById(userId);
+		const user = await getUserByIdService(userId);
 
 		if (!user) {
 			throw new NotFoundError(`User with id ${userId} is not found`);
 		}
-		await userModel.findByIdAndUpdate(userId, {
-			deleteOn: new Date().getTime(),
-		});
+
+		await deleteUserService(userId);
 
 		res.status(200).json({
 			message: `delete id ${userId} success`,
@@ -143,12 +143,12 @@ export const deleteUser = async (req, res, next) => {
 export const userLogin = async (req, res, next) => {
 	try {
 		const { username, password } = req.body.account;
-		// console.log('boyd',req.body);
-		// console.log("send", username, password);
-		const user = await userModel.findOne({ "account.username": username });
-		// console.log('password', user.account.password)
+
+		const user = await loginService(username);
+		// user / password ผิด
+
 		if (!user) {
-			throw new UnAuthorizeError(`Ueser ${username} is not found`);
+			throw new UnAuthorizeError(`User ${username} is not found`);
 		}
 		const isPasswordValid = await bcrypt.compare(
 			password,
