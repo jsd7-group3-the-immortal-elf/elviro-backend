@@ -67,17 +67,17 @@ const userSchema = Joi.object({
 		Joi.object({
 			firstNameAdr: Joi.string().required(),
 			lastNameAdr: Joi.string().required(),
-			phoneAdr: Joi.string().required(),
-			address: Joi.string().required(),
-			province: Joi.string().required(),
-			district: Joi.string().required(),
-			subDistrict: Joi.string().required(),
-			postalCode: Joi.string().required(),
+			phoneAdr: Joi.string(),
+			address: Joi.string(),
+			province: Joi.string(),
+			district: Joi.string(),
+			subDistrict: Joi.string(),
+			postalCode: Joi.string(),
 			default: Joi.boolean().default(false),
 		})
 	),
 	account: Joi.object({
-		username: Joi.string(),
+		username: Joi.string().required(),
 		password: Joi.string().required(),
 	}),
 	cardInfo: Joi.object({
@@ -88,7 +88,7 @@ const userSchema = Joi.object({
 	}),
 	cart: Joi.array().items(
 		Joi.object({
-			productId: Joi.string().required(),
+			productId: Joi.string(),
 			quantity: Joi.number().min(0),
 			isChecked: Joi.boolean().default(false),
 		})
