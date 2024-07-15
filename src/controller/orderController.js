@@ -4,6 +4,7 @@ import {
 	UnAuthorizeError,
 	NotFoundError,
 } from "../utility/error.js";
+import mongoose from "mongoose";
 
 export const getAllOrder = async (req, res, next) => {
 	try {
@@ -45,13 +46,19 @@ export const browseOrder = async (req, res, next) => {
 			return next();
 		}
 
-		const allOrder = await orderService.browseOrderService();
+		if (query.search) {
+			query["_id"] = new mongoose.Types.ObjectId(`${query.search}`);
+			delete query.status;
+		}
+		delete query.search;
 
-		if (allOrder.length == 0) throw new NotFoundError("can't found order");
+		const queryOrder = await orderService.browseOrderService(query);
+
+		// if (queryOrder.length == 0) throw new NotFoundError("can't found order");
 
 		res.status(200).json({
 			message: "get query order success",
-			data: allOrder,
+			data: queryOrder,
 		});
 	} catch (error) {
 		next(error);

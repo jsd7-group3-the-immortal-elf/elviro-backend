@@ -11,14 +11,14 @@ import {
 
 const router = express.Router();
 
-// adminAuthMiddleware
+// userAuthMiddleware
 router.get("/", browseOrder, getAllOrder);
 
 // adminAuthMiddleware
 router.get("/:orderId", getOrderById);
 
 // userAuthMiddleware
-router.get("/:userId", getAllOrderByUserId);
+// router.get("/:userId", getAllOrderByUserId);
 
 // userAuthMiddleware
 router.get("/:userId/:orderId", getOneOrderByUserId);

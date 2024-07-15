@@ -50,7 +50,7 @@ const orderService = {
 					lastName: "$customer.customerInfo.profile.lastName",
 				},
 			},
-			{ $sort: { _id: 1 } },
+			{ $sort: { createOn: -1 } },
 		]);
 	},
 
@@ -77,9 +77,6 @@ const orderService = {
 					as: "customerInfo",
 				},
 			},
-			// {
-			// 	$unwind: "$orderDetail",
-			// },
 			{
 				$unwind: "$productInfo",
 			},
@@ -165,6 +162,7 @@ const orderService = {
 					lastName: "$customer.customerInfo.profile.lastName",
 				},
 			},
+			{ $sort: { createOn: -1 } },
 		]);
 	},
 
