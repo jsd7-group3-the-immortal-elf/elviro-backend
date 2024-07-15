@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 import orderModel from "../model/orderModel.js";
 
 const orderService = {
@@ -66,32 +66,32 @@ const orderService = {
 		//     }
 		// 	},])
 
-		orders.aggregate([
-			{
-				$match: {
-					"customer.customerId": ObjectId("668b6edc85daeb3a4220771a"),
-					_id: ObjectId("6690aba06e27230744df5fbd"),
-				},
-			},
-			{
-				$lookup: {
-					from: "users",
-					localField: "customer.customerId",
-					foreignField: "_id",
-					as: "customer.customerDetails",
-				},
-			},
-			{
-				$project: {
-					orderDate: 1,
-					totalPrice: 1,
-					status: 1,
-					createOn: 1,
-					"customer.customerId": 1,
-					"customer.customerDetails.address": 1,
-				},
-			},
-		]);
+		// orders.aggregate([
+		// 	{
+		// 		$match: {
+		// 			"customer.customerId": ObjectId("668b6edc85daeb3a4220771a"),
+		// 			_id: ObjectId("6690aba06e27230744df5fbd"),
+		// 		},
+		// 	},
+		// 	{
+		// 		$lookup: {
+		// 			from: "users",
+		// 			localField: "customer.customerId",
+		// 			foreignField: "_id",
+		// 			as: "customer.customerDetails",
+		// 		},
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			orderDate: 1,
+		// 			totalPrice: 1,
+		// 			status: 1,
+		// 			createOn: 1,
+		// 			"customer.customerId": 1,
+		// 			"customer.customerDetails.address": 1,
+		// 		},
+		// 	},
+		// ]);
 		return outAggregate;
 		// .populate("customer");
 	},
