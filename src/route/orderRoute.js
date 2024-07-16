@@ -16,7 +16,7 @@ const router = express.Router();
 router.get(
 	"/",
 	userAuthMiddleware,
-	getAllOrderByUserId,
+	// getAllOrderByUserId,
 	browseOrder,
 	getAllOrder
 );
