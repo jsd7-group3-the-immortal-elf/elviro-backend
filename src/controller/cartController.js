@@ -4,11 +4,7 @@ import {
 	browseCartByUserService,
 	createCartService,
 } from "../service/cartService.js";
-import {
-	BadRequestError,
-	UnAuthorizeError,
-	NotFoundError,
-} from "../utility/error.js";
+import { BadRequestError, NotFoundError } from "../utility/error.js";
 
 export const getCartByUser = async (req, res, next) => {
 	try {
@@ -34,7 +30,6 @@ export const browseCartByUser = async (req, res, next) => {
 		}
 
 		const userId = req.user._id;
-
 		const cart = await browseCartByUserService(userId);
 
 		return res.status(200).json({

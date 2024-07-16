@@ -32,13 +32,13 @@ export async function getCartByUserService(userId) {
 export async function browseCartByUserService(userId) {
 	return await userModel.aggregate([
 		{
-			$match: {
-				_id: new mongoose.Types.ObjectId(`${userId}`),
-				isChecked: true,
-			},
+			$unwind: "$cart",
 		},
 		{
-			$unwind: "$cart",
+			$match: {
+				_id: new mongoose.Types.ObjectId(`${userId}`),
+				"cart.isChecked": true,
+			},
 		},
 		{
 			$lookup: {
