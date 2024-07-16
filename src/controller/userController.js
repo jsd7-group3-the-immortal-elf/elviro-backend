@@ -93,7 +93,7 @@ export const userLogin = async (req, res, next) => {
 
 		res
 			// .cookie("access_token", token)
-			.cookie("access_token", token, { httpOnly: true })
+			// .cookie("access_token", token, { httpOnly: true })
 			.status(200)
 			.json({
 				message: `login success`,
