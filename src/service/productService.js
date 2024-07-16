@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import productModel from "../model/productModel.js";
+import orderModel from "../model/orderModel.js";
 
 export async function getAllProductService(skip, limit) {
 	return productModel.find({ deleteOn: null }).skip(skip).limit(limit);
@@ -6,6 +8,29 @@ export async function getAllProductService(skip, limit) {
 
 export async function getProductByIdService(productId) {
 	return productModel.findById(productId);
+}
+
+export async function getAdminProductByIdService(productId) {
+	// Order Date
+	// Product Quantity
+	// Product Price
+	// Order Total
+	// Status
+	return await productModel.aggregate([
+		{
+			$match: {
+				_id: new mongoose.Types.ObjectId(`${productId}`),
+			},
+		},
+		{
+			$lookup: {
+				from: "orders",
+				localField: "_id",
+				foreignField: "orderDetail.productId",
+				as: "order",
+			},
+		},
+	]);
 }
 
 export async function browseProductService(query, skip, limit) {
