@@ -63,18 +63,18 @@ export const createCart = async (req, res, next) => {
 		//กำหนด cart---> คือ user.cart
 		const { cart } = user;
 
-		cart.forEach((item) => {
+		cart?.forEach((item) => {
 			if (item.productId === productId) {
 				next();
 			}
 		});
 
 		//ยัดค่าใหม่ใส่เข้าไปใน cart ของ user โดยไม่ต้องใส่ field อื่นนอกจาก cart
-		const updatedUser = createCartService(data);
+		const updatedUser = createCartService(userId, productId, quantity);
 
 		return res.status(201).json({
 			message: "Create Cart Success",
-			data: updatedUser,
+			data: cart,
 		});
 	} catch (error) {
 		next(error);

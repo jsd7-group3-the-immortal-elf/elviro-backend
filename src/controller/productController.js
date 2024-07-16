@@ -13,7 +13,7 @@ import { BadRequestError, NotFoundError } from "../utility/error.js";
 
 export const getAllProduct = async (_req, res, next) => {
 	try {
-		const limit = 24;
+		const limit = 1000;
 		const page = 1;
 		const skip = (page - 1) * limit;
 
