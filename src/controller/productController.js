@@ -1,11 +1,14 @@
 import {
 	getAllProductService,
 	getProductByIdService,
+	getAdminProductByIdService,
 	browseProductService,
 	createProductService,
 	updateProductService,
 	deleteProductService,
 } from "../service/productService.js";
+import { getUserByIdService } from "../service/userService.js";
+import { verify } from "../utility/token.js";
 import { BadRequestError, NotFoundError } from "../utility/error.js";
 
 export const getAllProduct = async (_req, res, next) => {
@@ -37,6 +40,17 @@ export const getProductById = async (req, res, next) => {
 
 		if (!product) {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
+		}
+
+		const token = req.cookies.access_token;
+		const decoded = verify(token);
+		const user = await getUserByIdService(decoded.id);
+		if (user.isAdmin) {
+			const product = await getAdminProductByIdService(productId);
+			return res.status(200).json({
+				message: `get product id ${productId} success`,
+				data: product[0],
+			});
 		}
 
 		res.status(200).json({
