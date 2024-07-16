@@ -1,5 +1,6 @@
 // import mongoose from "mongoose";
 import orderModel from "../model/orderModel.js";
+import userModel from "../model/userModel.js";
 
 const orderService = {
 	async dataGetAllOrder() {
@@ -19,6 +20,8 @@ const orderService = {
 				_id: orderId,
 			})
 			.populate("customer.customerId");
+		// const user = await userModel.findById(userId).select("address");
+		// const address = user.address;
 		// const outAggregate = await orderModel.aggregate([
 		// 	{
 		// 		$match: {
