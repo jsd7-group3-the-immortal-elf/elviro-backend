@@ -174,12 +174,38 @@ const orderService = {
 	async dataGetUserOderId(userId, orderId) {
 		// const inputUserId = `ObjectId('${userId}')`;
 		// const OrderId = new mongoose.Types.ObjectId(orderId);
-		const outAggregate = orderModel
-			.find({
-				"customer.customerId": userId,
-				_id: orderId,
-			})
-			.populate("customer.customerId");
+		const outAggregate = orderModel.aggregate([
+			{
+				$match: {
+					"customer.customerId": userId,
+					_id: orderId,
+				},
+			},
+			{
+				$lookup: {
+					from: "users",
+					localField: "customer.customerId",
+					foreignField: "_id",
+					as: "customer.customerDetails",
+				},
+			},
+			{
+				$project: {
+					orderDate: 1,
+					totalPrice: 1,
+					status: 1,
+					createOn: 1,
+					"customer.customerId": 1,
+					"customer.customerDetails.address": 1,
+				},
+			},
+		]);
+
+		// .find({
+		// 	"customer.customerId": userId,
+		// 	_id: orderId,
+		// })
+		// .populate("customer.customerId");
 		// const user = await userModel.findById(userId).select("address");
 		// const address = user.address;
 		// const outAggregate = await orderModel.aggregate([
@@ -229,32 +255,6 @@ const orderService = {
 		//     }
 		// 	},])
 
-		// orders.aggregate([
-		// 	{
-		// 		$match: {
-		// 			"customer.customerId": ObjectId("668b6edc85daeb3a4220771a"),
-		// 			_id: ObjectId("6690aba06e27230744df5fbd"),
-		// 		},
-		// 	},
-		// 	{
-		// 		$lookup: {
-		// 			from: "users",
-		// 			localField: "customer.customerId",
-		// 			foreignField: "_id",
-		// 			as: "customer.customerDetails",
-		// 		},
-		// 	},
-		// 	{
-		// 		$project: {
-		// 			orderDate: 1,
-		// 			totalPrice: 1,
-		// 			status: 1,
-		// 			createOn: 1,
-		// 			"customer.customerId": 1,
-		// 			"customer.customerDetails.address": 1,
-		// 		},
-		// 	},
-		// ]);
 		return outAggregate;
 		// .populate("customer");
 	},
