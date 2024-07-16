@@ -1,5 +1,5 @@
-// import cartService from "../service/cartService.js";
 import userModel from "../model/userModel.js";
+import cartService from "../service/cartService.js";
 import {
 	BadRequestError,
 	UnAuthorizeError,
@@ -14,7 +14,9 @@ import {
 export const getCartByUser = async (req, res, next) => {
 	try {
 		const { userId } = req.params;
-		const user = await userModel.findById(userId); //function หลัก
+		console.log(userId);
+		const user = await cartService.getProductsByCart(userId);
+		console.log(userId); //function หลัก
 		const { cart } = user;
 		return res.status(200).json({
 			message: "Get the cart successful.",
@@ -39,7 +41,7 @@ export const createCart = async (req, res, next) => {
 		}
 
 		//ดึงค่า user โดยใช้ findById
-		const user = await userModel.findById(userId);
+		const user = await cartService.getProductsByCart(userId);
 		if (!user) {
 			throw new NotFoundError("User not found");
 		}
@@ -54,11 +56,7 @@ export const createCart = async (req, res, next) => {
 		});
 
 		//ยัดค่าใหม่ใส่เข้าไปใน cart ของ user โดยไม่ต้องใส่ field อื่นนอกจาก cart
-		const updatedUser = await userModel.findByIdAndUpdate(
-			userId,
-			{ $push: { cart: { productId: productId, quantity: quantity } } },
-			{ new: true, runValidators: true } //new คือ return ค่าที่ update โดยตามกฎ validator
-		);
+		const updatedUser = cartService.createCart(data);
 
 		return res.status(201).json({
 			message: "Create Cart Success",

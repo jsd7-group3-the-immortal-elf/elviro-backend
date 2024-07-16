@@ -1,15 +1,21 @@
-import dotenv from "dotenv";
-import { getProductsByCart } from "../controller/cartController";
-
-dotenv.config();
+import userModel from "../model/userModel.js";
 
 //File คำสั่งของ cart
+
 const cartService = {
 	//API - 1 Get all products in each user's cart
-	async getProductsByCart() {},
+	async getProductsByCart(userId) {
+		return userModel.findById(userId);
+	},
 
 	//API - 2 Get all products in each user's cart
-	async createCart(data) {},
+	async createCart(data) {
+		return userModel.findByIdAndUpdate(
+			userId,
+			{ $push: { cart: { productId: productId, quantity: quantity } } },
+			{ new: true, runValidators: true } //new คือ return ค่าที่ update โดยตามกฎ validator
+		);
+	},
 
 	//API - 3 Add new products into a cart
 	async updateCart(id, data) {},
@@ -17,3 +23,5 @@ const cartService = {
 	//API - 4 Delete products from cart
 	async deleteProductsByCart(id) {},
 };
+
+export default cartService;
