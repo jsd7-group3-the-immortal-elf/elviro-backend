@@ -56,7 +56,7 @@ export const createCart = async (req, res, next) => {
 		});
 
 		//ยัดค่าใหม่ใส่เข้าไปใน cart ของ user โดยไม่ต้องใส่ field อื่นนอกจาก cart
-		const updatedUser = cartService.createCart(data);
+		const updatedUser = cartService.createCart(productId, quantity);
 
 		return res.status(201).json({
 			message: "Create Cart Success",
