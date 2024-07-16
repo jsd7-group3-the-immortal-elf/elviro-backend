@@ -1,27 +1,16 @@
 import express from "express";
-
-//------import ค่าจาก controller
 import {
 	getCartByUser,
+	browseCartByUser,
 	createCart,
 	updateCart,
 	deleteProductsByCart,
 } from "../controller/cartController.js";
 
-import userModel from "../model/userModel.js";
-
 const router = express.Router();
 
 //API - 1 Get each user's cart
-router.post("/", (req, res) => {
-	const user = new userModel(req.body);
-
-	user.save();
-
-	res.json(user);
-});
-
-router.get("/:userId", getCartByUser);
+router.get("/:userId", browseCartByUser, getCartByUser);
 
 //API - 2 Create a new cart
 router.post("/:userId", createCart, updateCart);
