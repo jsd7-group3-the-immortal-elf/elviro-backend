@@ -42,15 +42,17 @@ export const getProductById = async (req, res, next) => {
 			throw new NotFoundError(`Product with id ${productId} is not found`);
 		}
 
-		const token = req.cookies.access_token;
-		const decoded = verify(token);
-		const user = await getUserByIdService(decoded.id);
-		if (user.isAdmin) {
-			const product = await getAdminProductByIdService(productId);
-			return res.status(200).json({
-				message: `get product id ${productId} success`,
-				data: product[0],
-			});
+		if (req.cookies.access_token) {
+			const token = req.cookies.access_token;
+			const decoded = verify(token);
+			const user = await getUserByIdService(decoded.id);
+			if (user.isAdmin) {
+				const product = await getAdminProductByIdService(productId);
+				return res.status(200).json({
+					message: `get product id ${productId} success`,
+					data: product[0],
+				});
+			}
 		}
 
 		res.status(200).json({
