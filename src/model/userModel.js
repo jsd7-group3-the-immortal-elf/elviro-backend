@@ -33,9 +33,10 @@ const userSchema = new mongoose.Schema({
 	},
 	cart: [
 		{
-			productId: { type: String },
+			productId: { type: mongoose.Schema.Types.ObjectID, ref: "products" },
 			quantity: { type: Number, min: 0 },
 			isChecked: { type: Boolean, default: false },
+			createOn: { type: Date, default: new Date().getTime() },
 		},
 	],
 	createOn: {
