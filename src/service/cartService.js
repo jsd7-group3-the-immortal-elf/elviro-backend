@@ -58,10 +58,17 @@ export async function browseCartByUserService(userId) {
 	]);
 }
 
-export async function createCartService(data) {
+export async function createCartService(userId, productId, quantity) {
 	return userModel.findByIdAndUpdate(
 		userId,
-		{ $push: { cart: { productId: productId, quantity: quantity } } },
+		{
+			$push: {
+				cart: {
+					productId: new mongoose.Types.ObjectId(`${productId}`),
+					quantity: quantity,
+				},
+			},
+		},
 		{ new: true, runValidators: true } //new คือ return ค่าที่ update โดยตามกฎ validator
 	);
 }
