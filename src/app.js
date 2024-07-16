@@ -27,7 +27,12 @@ const PORT = process.env.PORT || 8080;
 app.use(helmet());
 
 // CORS
-app.use(cors());
+app.use(
+	cors({
+		origin: true,
+		credentials: true,
+	})
+);
 
 // Rate Limit
 const limiter = rateLimit({
