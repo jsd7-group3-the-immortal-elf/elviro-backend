@@ -5,13 +5,14 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 
 import cartRoute from "./route/cartRoute.js";
 import orderRoute from "./route/orderRoute.js";
 import productRoute from "./route/productRoute.js";
 import userRoute from "./route/userRoute.js";
 
-// import userAuthMiddleware from "./middleware/userAuthMiddleware.js";
+import userAuthMiddleware from "./middleware/userAuthMiddleware.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
 
 mongoose.connect(process.env.DATABASE_URI);
@@ -26,7 +27,12 @@ const PORT = process.env.PORT || 8080;
 app.use(helmet());
 
 // CORS
-app.use(cors());
+app.use(
+	cors({
+		origin: true,
+		credentials: true,
+	})
+);
 
 // Rate Limit
 const limiter = rateLimit({
@@ -44,8 +50,9 @@ app.use(express.json());
 // URL Encoded Body Parser
 app.use(express.urlencoded({ extended: true }));
 
-//ใส่ userAuthMiddleWare ไปด้วย ใส่แค่ตรงนี้ก็
-app.use("/cart", cartRoute);
+app.use(cookieParser());
+
+app.use("/cart", userAuthMiddleware, cartRoute);
 app.use("/orders", orderRoute);
 app.use("/products", productRoute);
 app.use("/users", userRoute);

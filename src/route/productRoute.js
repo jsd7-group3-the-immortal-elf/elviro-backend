@@ -7,8 +7,7 @@ import {
 	updateProduct,
 	deleteProduct,
 } from "../controller/productController.js";
-
-// import adminAuthMiddleware from "../middleware/adminAuthMiddleware";
+import adminAuthMiddleware from "../middleware/adminAuthMiddleware.js";
 
 const router = express.Router();
 
@@ -16,15 +15,10 @@ router.get("/", browseProduct, getAllProduct);
 
 router.get("/:productId", getProductById);
 
-// router.get("/:id/browse", browseProduct);
+router.post("/", adminAuthMiddleware, createProduct);
 
-// adminAuthMiddleware
-router.post("/", createProduct);
+router.patch("/:productId", adminAuthMiddleware, updateProduct);
 
-// adminAuthMiddleware
-router.patch("/:productId", updateProduct);
-
-// adminAuthMiddleware
-router.delete("/:productId", deleteProduct);
+router.delete("/:productId", adminAuthMiddleware, deleteProduct);
 
 export default router;

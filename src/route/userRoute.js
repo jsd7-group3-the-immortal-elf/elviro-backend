@@ -6,29 +6,22 @@ import {
 	updateUser,
 	deleteUser,
 	userLogin,
-	
 } from "../controller/userController.js";
-
-
-// import adminAuthMiddleware from "../middleware/adminAuthMiddleware";
+import adminAuthMiddleware from "../middleware/adminAuthMiddleware.js";
+import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
+router.get("/", adminAuthMiddleware, getAllUsers);
 
-router.get("/:userId", getUserById);
+router.get("/:userId", userAuthMiddleware, getUserById);
 
-// router.get("/browse", async (req, res, next) => {});
+router.post("/create-account", createUser);
 
 router.post("/login", userLogin);
 
-// // adminAuthMiddleware
-router.post("/register", createUser);
+router.patch("/:userId", userAuthMiddleware, updateUser);
 
-// // adminAuthMiddleware
-router.patch("/:userId", updateUser);
-
-// // adminAuthMiddleware
-router.patch("/:userId", deleteUser);
+router.delete("/:userId", userAuthMiddleware, deleteUser);
 
 export default router;
