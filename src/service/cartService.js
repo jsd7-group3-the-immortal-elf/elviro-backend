@@ -1,27 +1,71 @@
+import mongoose from "mongoose";
 import userModel from "../model/userModel.js";
 
-//File คำสั่งของ cart
+export async function getCartByUserService(userId) {
+	return await userModel.aggregate([
+		{
+			$match: {
+				_id: new mongoose.Types.ObjectId(`${userId}`),
+			},
+		},
+		{
+			$unwind: "$cart",
+		},
+		{
+			$lookup: {
+				from: "products",
+				localField: "cart.productId",
+				foreignField: "_id",
+				as: "productDetail",
+			},
+		},
+		{
+			$project: {
+				cart: 1,
+				productDetail: 1,
+			},
+		},
+		{ $sort: { "cart.createOn": -1 } },
+	]);
+}
 
-const cartService = {
-	//API - 1 Get all products in each user's cart
-	async getProductsByCart(userId) {
-		return userModel.findById(userId);
-	},
+export async function browseCartByUserService(userId) {
+	return await userModel.aggregate([
+		{
+			$unwind: "$cart",
+		},
+		{
+			$match: {
+				_id: new mongoose.Types.ObjectId(`${userId}`),
+				"cart.isChecked": true,
+			},
+		},
+		{
+			$lookup: {
+				from: "products",
+				localField: "cart.productId",
+				foreignField: "_id",
+				as: "productDetail",
+			},
+		},
+		{
+			$project: {
+				cart: 1,
+				productDetail: 1,
+			},
+		},
+		{ $sort: { "cart.createOn": -1 } },
+	]);
+}
 
-	//API - 2 Get all products in each user's cart
-	async createCart(data) {
-		return userModel.findByIdAndUpdate(
-			userId,
-			{ $push: { cart: { productId: productId, quantity: quantity } } },
-			{ new: true, runValidators: true } //new คือ return ค่าที่ update โดยตามกฎ validator
-		);
-	},
+export async function createCartService(data) {
+	return userModel.findByIdAndUpdate(
+		userId,
+		{ $push: { cart: { productId: productId, quantity: quantity } } },
+		{ new: true, runValidators: true } //new คือ return ค่าที่ update โดยตามกฎ validator
+	);
+}
 
-	//API - 3 Add new products into a cart
-	async updateCart(id, data) {},
+export async function updateCart(id, data) {}
 
-	//API - 4 Delete products from cart
-	async deleteProductsByCart(id) {},
-};
-
-export default cartService;
+export async function deleteProductsByCart(id) {}
