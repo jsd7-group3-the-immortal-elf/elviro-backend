@@ -9,7 +9,13 @@ const cartService = {
 	},
 
 	//API - 2 Get all products in each user's cart
-	async createCart(data) {},
+	async createCart(data) {
+		return userModel.findByIdAndUpdate(
+			userId,
+			{ $push: { cart: { productId: productId, quantity: quantity } } },
+			{ new: true, runValidators: true } //new คือ return ค่าที่ update โดยตามกฎ validator
+		);
+	},
 
 	//API - 3 Add new products into a cart
 	async updateCart(id, data) {},
