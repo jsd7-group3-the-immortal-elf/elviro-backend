@@ -95,7 +95,10 @@ export const userLogin = async (req, res, next) => {
 			// .cookie("access_token", token)
 			.cookie("access_token", token, { httpOnly: true })
 			.status(200)
-			.json({ message: `login success` });
+			.json({
+				message: `login success`,
+				access_token: token,
+			});
 	} catch (error) {
 		next(error);
 	}
