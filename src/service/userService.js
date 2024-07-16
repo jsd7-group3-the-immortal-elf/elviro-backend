@@ -26,8 +26,12 @@ export async function deleteUserService(userId) {
 }
 
 export async function loginService(username) {
-	return (
-		userModel.findOne({ "account.username": username }) ||
-		userModel.findOne({ "profile.email": username })
-	);
+	const userUsername = await userModel.findOne({
+		"account.username": username,
+	});
+
+	if (userUsername) {
+		return userUsername;
+	}
+	return userModel.findOne({ "profile.email": username });
 }
