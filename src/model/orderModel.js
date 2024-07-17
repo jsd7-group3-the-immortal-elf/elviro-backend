@@ -10,11 +10,11 @@ const orderSchema = new mongoose.Schema({
 			productId: {
 				type: mongoose.Schema.Types.ObjectID,
 				ref: "products",
-				request: true,
+				required: true,
 			},
 			quantity: {
 				type: Number,
-				request: true,
+				required: true,
 			},
 			status: {
 				type: String,
@@ -33,21 +33,21 @@ const orderSchema = new mongoose.Schema({
 	],
 	totalPrice: {
 		type: Number,
-		request: true,
+		required: true,
 	},
 	payment: {
 		type: String,
-		request: true,
+		required: true,
 	},
 	customer: {
 		customerId: {
 			type: mongoose.Schema.Types.ObjectID,
 			ref: "users",
-			request: true,
+			required: true,
 		},
 		addressIndex: {
 			type: Number,
-			request: true,
+			required: true,
 		},
 	},
 	status: {
