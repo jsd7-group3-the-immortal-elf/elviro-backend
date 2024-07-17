@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 export const getAllOrder = async (req, res, next) => {
 	try {
 		const allOrder = await orderService.getAllOrderService();
+		console.log(allOrder);
 
 		if (allOrder.length == 0) throw new NotFoundError("can't found order");
 
@@ -87,6 +88,9 @@ export const getOneOrderByUserId = async (req, res, next) => {
 		const { userId, orderId } = req.params;
 		// const inputUserId = `ObjectId('${userId}')`;
 		// console.log("inputUserId  : " + inputUserId);
+		// console.log("userId : " + userId);
+		// console.log("---------------");
+		// console.log("orderId :" + orderId);
 		const user = await orderService.dataGetUserOderId(userId, orderId);
 
 		return res.status(200).json({
@@ -100,8 +104,8 @@ export const getOneOrderByUserId = async (req, res, next) => {
 
 export const createOrder = async (req, res, next) => {
 	try {
-		const { orderDetail, totalPrice, customer } = req.body;
-		const data = { orderDetail, totalPrice, customer };
+		const { orderDetail, totalPrice, customer, payment } = req.body;
+		const data = { orderDetail, totalPrice, customer, payment };
 		const orderCreate = await orderService.dataCreateOrderData(data);
 
 		res.status(201).json({
