@@ -148,6 +148,8 @@ export const browseProduct = async (req, res, next) => {
 		const totalProduct = queryProduct.length;
 		const totalPage = Math.ceil(totalProduct / limit);
 
+		console.log(totalProduct);
+
 		res.status(200).json({
 			message: "get query product success",
 			totalProduct: totalProduct,
