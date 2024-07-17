@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 //API - 1 Get each user's cart
-router.get("/:userId", browseCartByUser, getCartByUser);
+router.get("/:userId", getCartByUser);
 
 //API - 2 Create a new cart
 router.post("/:userId", createCart, updateCart);
