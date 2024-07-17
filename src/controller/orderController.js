@@ -103,8 +103,8 @@ export const getOneOrderByUserId = async (req, res, next) => {
 
 export const createOrder = async (req, res, next) => {
 	try {
-		const { orderDetail, totalPrice, customer } = req.body;
-		const data = { orderDetail, totalPrice, customer };
+		const { orderDetail, totalPrice, customer, payment } = req.body;
+		const data = { orderDetail, totalPrice, customer, payment };
 		const orderCreate = await orderService.dataCreateOrderData(data);
 
 		res.status(201).json({
