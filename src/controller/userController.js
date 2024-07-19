@@ -43,7 +43,7 @@ export const getUserById = async (req, res, next) => {
 
 export const createUser = async (req, res, next) => {
 	try {
-		const { profile, account } = req.body;
+		const { profile, account, isAdmin } = req.body;
 
 		if (!profile || !account) {
 			throw new BadRequestError("All field is require");
@@ -51,11 +51,10 @@ export const createUser = async (req, res, next) => {
 
 		const hashedPassword = await hashPassword(account.password);
 
-		console.log(hashedPassword);
-
 		const data = {
 			profile,
 			account: { ...account, password: hashedPassword },
+			isAdmin,
 		};
 
 		await createUserService(data);
