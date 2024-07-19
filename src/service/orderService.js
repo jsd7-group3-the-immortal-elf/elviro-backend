@@ -24,12 +24,9 @@ const orderService = {
 			{
 				$unwind: "$orderDetail",
 			},
-			// {
-			// 	$unwind: "$productInfo",
-			// },
-			// {
-			// 	$unwind: "$orderDetail.productInfo",
-			// },
+			{
+				$unwind: "$orderDetail.productInfo",
+			},
 			{
 				$group: {
 					_id: "$_id",
@@ -177,7 +174,7 @@ const orderService = {
 	async dataGetUserOderId(userId, orderId) {
 		// const inputUserId = `ObjectId('${userId}')`;
 		// const OrderId = new mongoose.Types.ObjectId(orderId);
-		const outAggregate = orderModel.aggregate([
+		return orderModel.aggregate([
 			{
 				$match: {
 					"customer.customerId": userId,
@@ -258,7 +255,6 @@ const orderService = {
 		//     }
 		// 	},])
 
-		return outAggregate;
 		// .populate("customer");
 	},
 
@@ -273,4 +269,5 @@ const orderService = {
 		return orderModel.findByIdAndUpdate(orderId, { status: status });
 	},
 };
+
 export default orderService;

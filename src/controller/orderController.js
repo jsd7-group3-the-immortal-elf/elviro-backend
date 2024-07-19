@@ -9,7 +9,6 @@ import mongoose from "mongoose";
 export const getAllOrder = async (req, res, next) => {
 	try {
 		const allOrder = await orderService.getAllOrderService();
-		console.log(allOrder);
 
 		if (allOrder.length == 0) throw new NotFoundError("can't found order");
 
